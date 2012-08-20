@@ -1,0 +1,14 @@
+Concerning the source code
+==========================
+
+Copyright © 2012 Christopher Foo <chris.foo@gmail.com>
+Licensed under GNU General Public License Version 3. See GPLv3.txt or visit
+<http://www.gnu.org/licenses/>.
+
+
+Concerning the images
+=====================
+
+Copyright © 2012 Christopher Foo <chris.foo@gmail.com>
+Licnesed under Creative Commons Attribution-ShareAlike 3.0 Unported License.
+See CC_BY-SA_3.0.txt or visit <http://creativecommons.org/licenses/>.
