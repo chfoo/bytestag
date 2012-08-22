@@ -84,14 +84,14 @@ class SharedFilesController(BaseController):
         self._scan_task = self.application.singletons[
             DHTClientController].client.shared_files_table.hash_directories()
 
-        def f():
+        def f(*args):
             GLib.idle_add(self._disable_scan_ui)
 
         self._scan_task.observer.register(f)
         GLib.timeout_add(200, self._update_scan_progress)
 
     def _shared_files_scan_stop_button_clicked_cb(self, *args):
-        def f():
+        def f(*args):
             GLib.idle_add(self._disable_scan_ui)
 
         self._scan_task.observer.register(f)
