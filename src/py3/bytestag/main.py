@@ -40,6 +40,9 @@ def main():
         help='Python logging level')
     arg_parser.add_argument('--log-filename',
         help='Python logging filename')
+    arg_parser.add_argument('--initial-scan', default=False,
+        action='store_true',
+        help='Python logging filename')
 
     args = arg_parser.parse_args()
 
@@ -60,7 +63,8 @@ def main():
         known_node_address = None
 
     client = Client(args.cache_dir, known_node_address=known_node_address,
-        address=(args.host, args.port), node_id=KeyBytes(args.node_id or True))
+        address=(args.host, args.port), node_id=KeyBytes(args.node_id or True),
+        initial_scan=args.initial_scan)
 
     client.cache_table.max_size = args.cache_size
 

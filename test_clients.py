@@ -19,7 +19,7 @@ def main():
         args = ['xterm', '-title', 'Client {}'.format(i), '-e', 
             'python3', '-m', 'bytestag', '--log-level=INFO',
             '--host=127.0.0.1', '--port={}'.format(port_num), 
-            '--cache-dir', temp_dir.name, 
+            '--cache-dir', temp_dir.name, '--initial-scan',
 #            '--log-filename', '{}/log'.format(temp_dir.name),
             ]
         

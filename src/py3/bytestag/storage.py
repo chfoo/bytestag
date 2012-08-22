@@ -13,8 +13,6 @@ import itertools
 import logging
 import math
 import os
-import platform
-import shutil
 import sqlite3
 import threading
 
@@ -47,22 +45,6 @@ def total_parts(total_byte_size, part_size):
     '''
 
     return math.ceil(total_byte_size / part_size)
-
-
-@contextlib.contextmanager
-def file_overwriter(path, flags='wb'):
-    new_temp_path = '{}-new~'.format(path)
-    old_temp_path = '{}~'.format(path)
-
-    with open(new_temp_path, flags) as f:
-        yield f
-
-    shutil.copy(path, old_temp_path)
-
-    if platform.system() == 'Windows':
-        os.remove(path)
-
-    os.rename(new_temp_path, old_temp_path)
 
 
 class MemoryKVPTable(KVPTable):
@@ -451,7 +433,7 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
                 'FOREIGN KEY (file_id) REFERENCES files (id)'
                 'ON DELETE CASCADE'
                 ')')
-            con.execute('CREATE INDEX key ON files (key)')
+            con.execute('CREATE INDEX IF NOT EXISTS key ON files (key)')
 
     @property
     def shared_directories(self):
@@ -763,6 +745,9 @@ class SharedFilesHashTask(Task):
         self._part_size = part_size
 
         for directory in table.shared_directories:
+            if not self.is_running:
+                return
+
             self._hash_directory(directory)
 
         if not table.shared_directories:
@@ -776,6 +761,9 @@ class SharedFilesHashTask(Task):
         _logger.info('Hashing directory %s', directory)
 
         for file_path, size, mtime in self._walk_dir(directory):
+            if not self.is_running:
+                return
+
             if os.path.isfile(file_path):
                 self._hash_file(file_path, size, mtime)
 
@@ -806,6 +794,9 @@ class SharedFilesHashTask(Task):
 
         with open(path, 'rb') as f:
             while True:
+                if not self.is_running:
+                    return
+
                 data = f.read(self._part_size)
 
                 if not data:
@@ -836,9 +827,12 @@ class SharedFilesHashTask(Task):
                 hash_bytes = hashes[i]
                 self.progress = (path, offset)
 
-                con.execute('INSERT INTO parts '
-                    '(hash_id, file_id, file_offset) VALUES '
-                '(?, ?, ?)', (hash_bytes, row_id, offset))
+                try:
+                    con.execute('INSERT INTO parts '
+                        '(hash_id, file_id, file_offset) VALUES '
+                    '(?, ?, ?)', (hash_bytes, row_id, offset))
+                except sqlite3.IntegrityError:
+                    _logger.exception('Possible duplicate')
 
     def _clean_database(self):
         _logger.info('Cleaning database')

@@ -509,6 +509,7 @@ class FnTaskSlot(threading.Thread):
         self._current_tasks = set()
         self._running = False
         self._max_size = max_size
+        self._observer = Observer()
 
         self.start()
 
@@ -531,6 +532,19 @@ class FnTaskSlot(threading.Thread):
     def current_tasks(self):
         return self._current_tasks
 
+    @property
+    def observer(self):
+        '''An observer that fires when a task is added or removed.
+
+        The observer callback arguments are:
+
+        1. :obj:`bool` - If `True`, then the task is added. Otherwise,
+           the task was removed.
+        2. :class:`Task` - The task added or removed.
+        '''
+
+        return self._observer
+
     def run(self):
         self._running = True
 
@@ -551,12 +565,14 @@ class FnTaskSlot(threading.Thread):
                     task = fn(*args, **kwargs)
 
                     self._current_tasks.add(task)
+                    self._observer(True, task)
 
             for task in frozenset(self._current_tasks):
                 task.result(timeout=1)
 
                 if task.is_finished:
                     self._current_tasks.remove(task)
+                    self._observer(False, task)
 
     def stop(self):
         self._running = False

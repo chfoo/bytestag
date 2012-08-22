@@ -6,7 +6,7 @@ from bytestag.dht.models import (NodeList, JSONKeys, KVPExchangeInfoList,
     KVPExchangeInfo)
 from bytestag.dht.tables import Bucket, RoutingTable, Node, BucketFullError
 from bytestag.events import (EventReactorMixin, EventScheduler, EventID,
-    asynchronous, Task)
+    asynchronous, Task, Observer)
 from bytestag.keys import KeyBytes, compute_bucket_number, random_bucket_key
 from bytestag.network import Network
 from bytestag.tables import KVPID
@@ -854,6 +854,13 @@ class FindValueFromNodeTask(Task):
 class StoreToNodeTask(Task):
     '''Returns the number of bytes sent'''
 
+    def __init__(self, *args, **kwargs):
+        Task.__init__(self, *args, **kwargs)
+        self.node = args[0]
+        self.key = args[1]
+        self.index = args[2]
+        self.total_size = len(args[3])
+
     def run(self, controller, node, key, index, bytes_, timestamp):
         d = controller._template_dict()
         d[JSONKeys.RPC] = JSONKeys.RPCs.STORE
@@ -999,6 +1006,23 @@ class JoinNetworkTask(Task):
 
 
 class StoreValueTask(Task):
+    '''Stores a value to many nodes'''
+
+    def __init__(self, *args, **kwargs):
+        Task.__init__(self, *args, **kwargs)
+        self._store_to_node_task_observer = Observer()
+
+    @property
+    def store_to_node_task_observer(self):
+        '''Observer for when :class:`StoreToNodeTask` is started and finished.
+
+        The first argument of the callback is :obj:`bool`. If `True`, the
+        task was created. Otherwise, the task was finished. The second
+        argument is :class:`StoreToNodeTask`
+        '''
+
+        return self._store_to_node_task_observer
+
     def run(self, controller, key, index):
         kvpid = KVPID(key, index)
         kvp_record = controller._kvp_table.record(kvpid)
@@ -1037,11 +1061,13 @@ class StoreValueTask(Task):
                     kvp_record.timestamp)
 
                 self.hook_task(task)
+                self._store_to_node_task_observer(True, task)
 
                 tasks.append(task)
 
             for task in tasks:
                 bytes_sent = task.result()
+                self._store_to_node_task_observer(False, task)
 
                 if bytes_sent:
                     store_count += 1

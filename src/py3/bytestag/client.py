@@ -24,7 +24,7 @@ class Client(threading.Thread):
     '''
 
     def __init__(self, cache_dir, address=('0.0.0.0', 0), node_id=None,
-    known_node_address=None):
+    known_node_address=None, initial_scan=False):
         threading.Thread.__init__(self)
         self.daemon = True
         self.name = '{}.{}'.format(__name__, Client.__name__)
@@ -38,17 +38,25 @@ class Client(threading.Thread):
         self._aggregated_kvp_table = AggregatedKVPTable(self._cache_table,
             [self._cache_table, self._shared_files_table])
         self._known_node_address = known_node_address
+        self._upload_slot = FnTaskSlot()
+        self._initial_scan = initial_scan
 
     @property
     def cache_table(self):
+        '''The :class:`DatabaseKVPTable`'''
         return self._cache_table
 
     @property
     def shared_files_table(self):
+        '''The :class:`SharedFilesKVPTable`'''
+
         return self._shared_files_table
 
+    @property
+    def upload_slot(self):
+        return self._upload_slot
+
     def run(self):
-        self._upload_slot = FnTaskSlot()
         self._dht_network = DHTNetwork(self._event_reactor,
             self._aggregated_kvp_table, self._node_id, self._network)
         self._publisher = Publisher(self._event_reactor, self._dht_network,
@@ -61,7 +69,9 @@ class Client(threading.Thread):
             # TODO: put warning if join fails, but don't check on
             # the same thread as the event_reactor
 
-        self._shared_files_table.hash_directories()
+        if self._initial_scan:
+            self._shared_files_table.hash_directories()
+
         self._event_reactor.start()
 
     def stop(self):
