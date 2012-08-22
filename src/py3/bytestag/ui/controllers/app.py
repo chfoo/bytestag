@@ -7,6 +7,7 @@ from bytestag.ui.controllers.sharedfiles import SharedFilesController
 from bytestag.ui.controllers.transfers import TransfersTabController
 from gi.repository import Gtk, Gdk, GLib # @UnresolvedImport
 import signal
+import sys
 
 
 class Application(BaseApplication):
@@ -35,4 +36,5 @@ class Application(BaseApplication):
     def stop(self):
         Gtk.main_quit()
 
-
+        # FIXME: properly terminate threads
+        sys.exit(0)

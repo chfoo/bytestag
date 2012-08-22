@@ -3,5 +3,5 @@ import logging
 
 
 def main():
-    logging.basicConfig(level='WARNING')
+    logging.basicConfig(level='INFO')
     app = Application()

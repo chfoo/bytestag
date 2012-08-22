@@ -211,7 +211,7 @@ class RoutingTable(object):
     '''A list of buckets'''
 
     def __init__(self, key=None):
-        self._buckets = tuple(Bucket(i) for i in range(KeyBytes.BIT_SIZE + 1))
+        self._buckets = tuple(Bucket(i) for i in range(KeyBytes.BIT_SIZE))
         self._key = key or KeyBytes()
 
     @property
@@ -228,7 +228,8 @@ class RoutingTable(object):
     def __contains__(self, contact):
         bucket = self.get_bucket(contact)
 
-        return contact in bucket
+        if bucket:
+            return contact in bucket
 
     def __str__(self):
         sio = io.StringIO()
@@ -259,7 +260,9 @@ class RoutingTable(object):
         '''
 
         bucket_number = self.get_bucket_number(node)
-        return self._buckets[bucket_number]
+
+        if bucket_number < KeyBytes.BIT_SIZE:
+            return self._buckets[bucket_number]
 
     def get_bucket_number(self, node):
         '''Get the appropriate bucket number for the node

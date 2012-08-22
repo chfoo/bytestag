@@ -387,6 +387,9 @@ class Task(object):
     def progress(self, o):
         self._progress = o
 
+        for parent_task in self._parent_tasks:
+            parent_task.progress = o
+
     @property
     def is_running(self):
         '''Return whether the task is running
@@ -435,7 +438,7 @@ class Task(object):
         '''
 
         self._hooked_tasks.append(task)
-        task._hooked(task)
+        task._hooked(self)
 
     def _hooked(self, parent_task):
         '''A task has hooked us'''

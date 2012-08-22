@@ -856,10 +856,10 @@ class StoreToNodeTask(Task):
 
     def __init__(self, *args, **kwargs):
         Task.__init__(self, *args, **kwargs)
-        self.node = args[0]
-        self.key = args[1]
-        self.index = args[2]
-        self.total_size = len(args[3])
+        self.node = args[1]
+        self.key = args[2]
+        self.index = args[3]
+        self.total_size = len(args[4])
 
     def run(self, controller, node, key, index, bytes_, timestamp):
         d = controller._template_dict()

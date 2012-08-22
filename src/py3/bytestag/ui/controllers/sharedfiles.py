@@ -40,7 +40,7 @@ class SharedFilesController(BaseController):
         shared_files_tree_view = builder.get_object('shared_files_tree_view')
 
         path_cell_renderer = Gtk.CellRendererText()
-        path_column = Gtk.TreeViewColumn('Directory', path_cell_renderer,
+        path_column = Gtk.TreeViewColumn('Folder', path_cell_renderer,
             text=0)
 
         shared_files_tree_view.append_column(path_column)
