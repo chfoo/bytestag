@@ -367,7 +367,7 @@ class Task(object):
     def __init__(self, *args, **kwargs):
         self._progress = None
         self._result = None
-        self._observer = Observer()
+        self._observer = Observer(one_shot=True)
         self._is_running = False
         self._is_finished = False
         self._event = threading.Event()
@@ -445,7 +445,7 @@ class Task(object):
 
         self._parent_tasks.append(parent_task)
 
-        def unhook():
+        def unhook(*args):
             self._parent_tasks.remove(parent_task)
             parent_task._unhook_task(self)
 
@@ -475,7 +475,7 @@ class Task(object):
         finally:
             self._is_finished = True
             self._event.set()
-            self._observer()
+            self._observer(self._result)
             self._is_running = False
 
             return self._result
@@ -520,9 +520,16 @@ class FnTaskSlot(threading.Thread):
         '''Executes function with given arguments.
 
         This function blocks until the slot is not full.
+
+        :rtype: :class:`Task`
+        :returns: The Task that given ``fn`` returns.
         '''
 
-        self._queue.put((fn, args, kwargs))
+        event = threading.Event()
+        self._queue.put((event, fn, args, kwargs))
+        event.wait()
+
+        return event.task
 
     def add_no_block(self, fn, *args, **kwargs):
         self._queue.put_nowait((fn, args, kwargs))
@@ -560,12 +567,14 @@ class FnTaskSlot(threading.Thread):
                     timeout = None
 
                 try:
-                    fn, args, kwargs = self._queue.get(timeout=timeout)
+                    event, fn, args, kwargs = self._queue.get(timeout=timeout)
                 except queue.Empty:
                     pass
                 else:
                     _logger.debug('Fn task slot execute')
                     task = fn(*args, **kwargs)
+                    event.task = task
+                    event.set()
 
                     self._current_tasks.add(task)
                     self._observer(True, task)

@@ -1,4 +1,6 @@
-from bytestag.dht.network import StoreValueTask, StoreToNodeTask
+from bytestag.dht.network import (StoreValueTask, StoreToNodeTask,
+    ReadStoreFromNodeTask)
+from bytestag.network import ReadTransferTask
 from bytestag.ui.controllers.base import BaseController
 from bytestag.ui.controllers.builder import BuilderController
 from bytestag.ui.controllers.dht import DHTClientController
@@ -13,8 +15,13 @@ class TransfersTabController(BaseController):
 
         self._create_tree_view_columns()
         self._connect_upload_slot()
+        self._connect_download_slot()
 
         GLib.timeout_add(200, self._update_progress)
+
+    @classmethod
+    def format_key(cls, key, index):
+        return '{}:{}'.format(key.base32, index.base32).lower()
 
     def _create_tree_view_columns(self):
         builder = self._builder
@@ -62,7 +69,7 @@ class TransfersTabController(BaseController):
                     Gtk.STOCK_GO_UP,
                     task.node.address[0],
                     task.node.address[1],
-                    '{}:{}'.format(task.key.base32, task.index.base32).lower(),
+                    TransfersTabController.format_key(task.key, task.index),
                     task.progress,
                     task.total_size,
                     0,
@@ -81,14 +88,52 @@ class TransfersTabController(BaseController):
 
         upload_slot.observer.register(upload_slot_callback)
 
+    def _connect_download_slot(self):
+        builder = self._builder
+        download_slot = self.application.singletons[
+            DHTClientController].client.download_slot
+        transfers_list_store = builder.get_object('transfers_list_store')
+
+        def download_slot_callback(added, task):
+            assert isinstance(task, ReadStoreFromNodeTask)
+
+            if added:
+                # TODO: address and key is not useful until the
+                # transfer actually occurs
+                tree_iter = transfers_list_store.append([
+                    # FIXME: provide real icons
+                    Gtk.STOCK_GO_DOWN,
+                    '',
+                    0,
+                    '',
+                    0,
+                    0,
+                    0,
+                ])
+                self._task_to_tree_iter_map[task] = tree_iter
+            else:
+                tree_iter = self._task_to_tree_iter_map.pop(task)
+                transfers_list_store.remove(tree_iter)
+
+        download_slot.observer.register(
+            lambda *args: GLib.idle_add(download_slot_callback, *args))
+
     def _update_progress(self):
         transfers_list_store = self._builder.get_object('transfers_list_store')
 
         for task, tree_iter in self._task_to_tree_iter_map.items():
-            if isinstance(task, StoreToNodeTask):
-                if task.progress:
-                    transfers_list_store[tree_iter][4] = task.progress
-                    transfers_list_store[tree_iter][6] = \
-                        int(task.progress / task.total_size * 100)
+            if not task.progress:
+                continue
+
+            transfers_list_store[tree_iter][4] = task.progress
+            transfers_list_store[tree_iter][5] = task.total_size
+            transfers_list_store[tree_iter][6] = \
+                int(task.progress / task.total_size * 100)
+
+            if isinstance(task, ReadStoreFromNodeTask):
+                transfers_list_store[tree_iter][1] = task.address[0]
+                transfers_list_store[tree_iter][2] = task.address[1]
+                transfers_list_store[tree_iter][3] = \
+                    TransfersTabController.format_key(task.key, task.index)
 
         return True

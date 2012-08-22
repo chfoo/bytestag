@@ -263,7 +263,8 @@ class Network(EventReactorMixin):
 
         raise NotImplementedError()
 
-    def expect_incoming_transfer(self, transfer_id, timeout=DEFAULT_TIMEOUT):
+    def expect_incoming_transfer(self, transfer_id, timeout=DEFAULT_TIMEOUT,
+    read_transfer_task_class=None):
         '''Allow a transfer for download.
 
         :Parameters:
@@ -277,7 +278,8 @@ class Network(EventReactorMixin):
             interrupted. The progress is the number of bytes downloaded.
         '''
 
-        read_transfer_task = ReadTransferTask()
+        read_transfer_task_class = read_transfer_task_class or ReadTransferTask
+        read_transfer_task = read_transfer_task_class(('', 0))
         self._incoming_transfers[transfer_id] = IncomingTransfer(
             time.time(), timeout, read_transfer_task)
 
@@ -325,6 +327,7 @@ class Network(EventReactorMixin):
         read_transfer_task = self._incoming_transfers[transfer_id
             ].read_transfer_task
         data_str = data_packet.dict_obj[JSONKeys.TRANSFER_DATA]
+        read_transfer_task.address = data_packet.address
 
         if data_str is None:
             read_transfer_task.transfer(None)
@@ -530,10 +533,11 @@ class Network(EventReactorMixin):
 class ReadTransferTask(Task):
     '''Downloads data from a contact and returns a file object.'''
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, address):
+        Task.__init__(self)
         self._file = tempfile.SpooledTemporaryFile(1048576)
         self._bytes_queue = queue.Queue(1)
+        self.address = address
 
     def transfer(self, bytes_):
         self._bytes_queue.put(bytes_)

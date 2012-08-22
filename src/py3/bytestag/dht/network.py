@@ -6,9 +6,9 @@ from bytestag.dht.models import (NodeList, JSONKeys, KVPExchangeInfoList,
     KVPExchangeInfo)
 from bytestag.dht.tables import Bucket, RoutingTable, Node, BucketFullError
 from bytestag.events import (EventReactorMixin, EventScheduler, EventID,
-    asynchronous, Task, Observer)
+    asynchronous, Task, Observer, FnTaskSlot)
 from bytestag.keys import KeyBytes, compute_bucket_number, random_bucket_key
-from bytestag.network import Network
+from bytestag.network import Network, ReadTransferTask
 from bytestag.tables import KVPID
 import collections
 import concurrent.futures
@@ -48,7 +48,8 @@ class DHTNetwork(EventReactorMixin):
     TIME_REPUBLISH = 86400  # seconds. time after original publisher must
     # republish
 
-    def __init__(self, event_reactor, kvp_table, node_id=None, network=None):
+    def __init__(self, event_reactor, kvp_table, node_id=None, network=None,
+    download_slot=None):
         '''Init
 
         :Parameters:
@@ -70,6 +71,7 @@ class DHTNetwork(EventReactorMixin):
         self._kvp_table = kvp_table
         self._event_scheduler = EventScheduler(event_reactor)
         self._refresh_timer_id = EventID(self, 'Refresh')
+        self._download_slot = download_slot or FnTaskSlot()
 
         self._setup_timers()
 
@@ -115,6 +117,13 @@ class DHTNetwork(EventReactorMixin):
         '''
 
         return self._network.server_address
+
+    @property
+    def download_slot(self):
+        '''The :class:`.FnTaskSlot` which holds
+        :class:`.ReadStoreFromNodeTask`.'''
+
+        return self._download_slot
 
     def _template_dict(self):
         '''Return a new dict holding common stuff like network id'''
@@ -506,9 +515,13 @@ class DHTNetwork(EventReactorMixin):
         if self._kvp_table.is_acceptable(kvpid, size, timestamp):
             transfer_id = self._network.new_sequence_id()
 
-            read_transfer_task = self._network.expect_incoming_transfer(
-                transfer_id)
+            read_transfer_task = self._download_slot.add(
+                self._network.expect_incoming_transfer, transfer_id,
+                read_transfer_task_class=ReadStoreFromNodeTask)
 
+            read_transfer_task.key = kvpid.key
+            read_transfer_task.index = kvpid.index
+            read_transfer_task.total_size = size
             d[JSONKeys.TRANSFER_ID] = transfer_id
 
             self._network.send_answer_reply(data_packet, d)
@@ -986,6 +999,8 @@ class JoinNetworkTask(Task):
 
         result = task.result()
 
+        _logger.debug('Join network ping result %s', result)
+
         if not result:
             return False
 
@@ -995,6 +1010,8 @@ class JoinNetworkTask(Task):
         self.hook_task(task)
 
         node_list = task.result()
+
+        _logger.debug('Join network find nodes result %s', node_list)
 
         if node_list:
             for node in node_list:
@@ -1140,3 +1157,11 @@ class GetValueTask(Task):
 
                 self._controller.store_to_node(node, self._key, self._index,
                     self._file.value(), self._kvp_exchange_info.timestamp)
+
+
+class ReadStoreFromNodeTask(ReadTransferTask):
+    def __init__(self, address):
+        ReadTransferTask.__init__(self, address)
+        self.key = None
+        self.index = None
+        self.total_size = None

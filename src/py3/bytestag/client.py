@@ -39,6 +39,7 @@ class Client(threading.Thread):
             [self._cache_table, self._shared_files_table])
         self._known_node_address = known_node_address
         self._upload_slot = FnTaskSlot()
+        self._download_slot = FnTaskSlot()
         self._initial_scan = initial_scan
 
     @property
@@ -54,11 +55,31 @@ class Client(threading.Thread):
 
     @property
     def upload_slot(self):
+        '''The :class:`.FnTaskSlot` which holds :class:`.StoreValueTask`.'''
+
         return self._upload_slot
+
+    @property
+    def download_slot(self):
+        '''Download slot.
+
+        :see: :func:`.DHTNetwork.download_slot`
+        '''
+
+        return self._download_slot
+
+    @property
+    def dht_network(self):
+        return self._dht_network
+
+    @property
+    def network(self):
+        return self._network
 
     def run(self):
         self._dht_network = DHTNetwork(self._event_reactor,
-            self._aggregated_kvp_table, self._node_id, self._network)
+            self._aggregated_kvp_table, self._node_id, self._network,
+            self._download_slot)
         self._publisher = Publisher(self._event_reactor, self._dht_network,
             self._aggregated_kvp_table, self._upload_slot)
         self._replicator = Replicator(self._event_reactor, self._dht_network,
