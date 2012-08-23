@@ -29,4 +29,6 @@ install-py: build-py
 	./setup.py install --prefix $(DESTDIR)
 	
 clean-py:
+	./setup.py clean
 	rm -rvf build/
+	rm -rvf dist/

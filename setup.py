@@ -15,14 +15,21 @@ setup(name='Bytestag',
     long_description=bytestag.long_description,
     author='Christopher Foo',
     author_email='chris.foo@gmail.com',
-#    url='',
-    packages=['bytestag'],
+    url='https://launchpad.net/bytestag',
+    packages=['bytestag', 'bytestag.dht', 
+        'bytestag.ui', 'bytestag.ui.controllers', 'bytestag.ui.models',
+        'bytestag.ui.views',
+    ],
     package_dir={'': src_dir},
+    package_data={
+        'bytestag.ui.views': ['ui/*.glade']
+    },
     classifiers=[
         'Development Status :: 1 - Planning',
         'Operating System :: OS Independent',
         'Topic :: Internet',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python :: 3',
     ],
-    requires=['bitstring (3.0)',]
+    requires=['bitstring (>=3.0)',]
 )

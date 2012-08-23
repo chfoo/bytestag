@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   about
+   readme
    API Reference <apiautogen/modules>
 
 Indices and tables
