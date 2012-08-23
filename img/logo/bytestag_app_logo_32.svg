@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="bytestag_app_logo_32.svg">
+  <title
+     id="title3802">Bytestag App Logo (32px)</title>
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect3002"
+       is_visible="true"
+       pattern="M 0,0 0,10 10,5 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect2998"
+       is_visible="true"
+       pattern="M 0,5 C 0,2.24 2.24,0 5,0 7.76,0 10,2.24 10,5 10,7.76 7.76,10 5,10 2.24,10 0,7.76 0,5 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <filter
+       inkscape:collect="always"
+       id="filter4586"
+       x="-0.22037612"
+       width="1.4407522"
+       y="-0.52983778"
+       height="2.0596756">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.45100083"
+         id="feGaussianBlur4588" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.627417"
+     inkscape:cx="19.938593"
+     inkscape:cy="9.8301813"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1342"
+     inkscape:window-height="721"
+     inkscape:window-x="24"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2990"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       dotted="false"
+       originy="16px"
+       originx="16px" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="16,34"
+       id="guide3765" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="12,16"
+       id="guide3767" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Bytestag App Logo (32px)</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Christopher Foo</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Shadow"
+     transform="translate(0,-16)"
+     style="display:inline" />
+  <g
+     inkscape:label="Main"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1020.3622)"
+     style="display:inline">
+    <rect
+       style="color:#000000;fill:#ce5c00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3800"
+       width="7.8951683"
+       height="32.115871"
+       x="20"
+       y="8"
+       transform="matrix(0.75995845,0,0,0.56046868,-2.199169,1022.8785)" />
+    <rect
+       style="color:#000000;fill:#fcaf3e;fill-opacity:1;fill-rule:nonzero;stroke:#fdcd86;stroke-width:1.15899956;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3798"
+       width="3.983403"
+       height="15.174867"
+       x="17.927385"
+       y="16.853302"
+       transform="matrix(0.753125,0,0,0.98847656,0.99843794,1012.2031)" />
+    <path
+       style="color:#000000;fill:#4e9a06;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 14,19 5,0 7.058681,-3.408345 6.663311,3.341988 L 38,19 l 0.03319,-5.37756 7.966805,0 0,25.228216 -7.966805,0 0,-11.950208 -5.311203,0 -6.639004,3.367251 -6.639005,-3.367251 -5.311203,0 0,5.311203 -7.9668049,0 0,-25.2282153 7.9668049,0 z"
+       id="path3778-6"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.753125,0,0,0.753125,-3.64375,1019.1028)"
+       sodipodi:nodetypes="ccccccccccccccccccc" />
+    <path
+       style="color:#000000;fill:#8ae234;fill-opacity:1;fill-rule:nonzero;stroke:#b8ee85;stroke-width:1.32780087;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 9.313278,18.402523 7.966805,0 5.975104,-3.319502 7.302904,3.319502 6.639005,0 0,-5.311203 3.983402,0 0,21.244813 -3.983402,0 0,-11.950208 -6.639005,0 -7.302904,3.319502 -5.975104,-3.319502 -7.966805,0 0,5.311204 -3.9834025,0 0,-21.2448136 3.9834025,0 z"
+       id="path3778"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.753125,0,0,0.753125,-1.5140625,1021.0028)"
+       sodipodi:nodetypes="ccccccccccccccccccc" />
+    <g
+       id="g4022"
+       transform="matrix(0.753125,0,0,0.753125,-2.1375,272.48317)" />
+    <g
+       id="g4022-4"
+       transform="translate(-10,21)" />
+    <g
+       id="g4022-49"
+       transform="translate(-8,22)">
+      <path
+         transform="matrix(1.1666667,0,0,1,0.08333265,992.3622)"
+         d="m 23.928571,22 a 3.4285712,4 0 1 1 -6.857142,0 3.4285712,4 0 1 1 6.857142,0 z"
+         sodipodi:ry="4"
+         sodipodi:rx="3.4285712"
+         sodipodi:cy="22"
+         sodipodi:cx="20.5"
+         id="path4002-1"
+         style="color:#000000;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.90909094;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         sodipodi:type="arc" />
+      <path
+         transform="matrix(0.7,0,0,0.7,9.65,998.9622)"
+         d="m 24.071429,22 a 3.5714285,3.6160712 0 1 1 -7.142858,0 3.5714285,3.6160712 0 1 1 7.142858,0 z"
+         sodipodi:ry="3.6160712"
+         sodipodi:rx="3.5714285"
+         sodipodi:cy="22"
+         sodipodi:cx="20.5"
+         id="path4002"
+         style="color:#000000;fill:#d3d7cf;fill-opacity:1;fill-rule:nonzero;stroke:#f3f5f3;stroke-width:1.42857146;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         sodipodi:type="arc" />
+    </g>
+  </g>
+</svg>

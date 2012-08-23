@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="48"
+   height="48"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="bytestag_logo_48.svg">
+  <title
+     id="title3802">Bytestag Logo (48px)</title>
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect3002"
+       is_visible="true"
+       pattern="M 0,0 0,10 10,5 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect2998"
+       is_visible="true"
+       pattern="M 0,5 C 0,2.24 2.24,0 5,0 7.76,0 10,2.24 10,5 10,7.76 7.76,10 5,10 2.24,10 0,7.76 0,5 z"
+       copytype="single_stretched"
+       prop_scale="1"
+       scale_y_rel="false"
+       spacing="0"
+       normal_offset="0"
+       tang_offset="0"
+       prop_units="false"
+       vertical_pattern="false"
+       fuse_tolerance="0" />
+    <filter
+       inkscape:collect="always"
+       id="filter3925"
+       x="-0.51201756"
+       width="2.0240351"
+       y="-0.72449313"
+       height="2.4489863">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.6066802"
+         id="feGaussianBlur3927" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3931"
+       x="-0.45"
+       width="1.9"
+       y="-0.9"
+       height="2.8">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.5"
+         id="feGaussianBlur3933" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="16"
+     inkscape:cx="24.010821"
+     inkscape:cy="15.301594"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer2"
+     showgrid="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="746"
+     inkscape:window-x="1024"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2990"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       dotted="false"
+       originy="24px"
+       originx="24px" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="24,31"
+       id="guide3765" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="17,24"
+       id="guide3767" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Bytestag Logo (48px)</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Christopher Foo</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Shadow">
+    <path
+       sodipodi:type="arc"
+       style="opacity:0.25;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;filter:url(#filter3931);enable-background:accumulate"
+       id="path3929"
+       sodipodi:cx="13"
+       sodipodi:cy="39"
+       sodipodi:rx="4"
+       sodipodi:ry="2"
+       d="m 17,39 a 4,2 0 1 1 -8,0 4,2 0 1 1 8,0 z"
+       transform="translate(27,0)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3929"
+       id="use3935"
+       transform="translate(-16,-3)"
+       width="48"
+       height="48" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3929"
+       id="use3935-4"
+       transform="translate(-32,-6)"
+       width="48"
+       height="48" />
+  </g>
+  <g
+     inkscape:label="Main"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1004.3622)">
+    <rect
+       style="color:#000000;fill:#ce5c00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3800"
+       width="7.8951683"
+       height="32.115871"
+       x="20"
+       y="8"
+       transform="matrix(1,0,0,0.74729381,0,1010.3839)" />
+    <rect
+       style="color:#000000;fill:#fcaf3e;fill-opacity:1;fill-rule:nonzero;stroke:#fdcd86;stroke-width:0.84515429;stroke-opacity:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3798"
+       width="5"
+       height="15"
+       x="18"
+       y="17"
+       transform="matrix(1,0,0,1.4,3.5,994.0622)" />
+    <path
+       style="color:#000000;fill:#4e9a06;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 14,19 5,0 7,-2 7,2 5,0 0,-5 8,0 0,24 -8,0 0,-11 -5,0 -7,2 -7,-2 -5,0 0,5 -8,0 0,-24 8,0 z"
+       id="path3778-6"
+       inkscape:connector-curvature="0"
+       transform="translate(-2,1005.3622)"
+       sodipodi:nodetypes="ccccccccccccccccccc" />
+    <path
+       style="color:#000000;fill:#8ae234;fill-opacity:1;fill-rule:nonzero;stroke:#b8ee85;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 11,19 6.75,0 6.75,-2 6.75,2 6.75,0 0,-5 5,0 0,21 -5,0 0,-11 -6.75,0 -6.75,2 -6.75,-2 -6.75,0 0,5 -5,0 0,-21 5,0 z"
+       id="path3778"
+       inkscape:connector-curvature="0"
+       transform="translate(-0.5,1006.8622)"
+       sodipodi:nodetypes="ccccccccccccccccccc" />
+  </g>
+</svg>
