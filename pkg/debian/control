@@ -36,7 +36,7 @@ Description: Wide availability peer-to-peer file sharing
 Package: bytestagd
 Architecture: all
 Section: unknown/net
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag, adduser
 Description: Bytestag peer-to-peer file sharing server
  This package contains the Bytestag server daemon.
 

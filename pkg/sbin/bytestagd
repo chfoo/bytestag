@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 PREFIX="/usr"
 DAEMON_ARGS=""
@@ -7,4 +7,12 @@ if [ -e /etc/bytestagd/bytestagd.sh ]; then
     . /etc/bytestagd/bytestagd.sh
 fi
 
-PYTHONPATH=$PREFIX/share/bytestag/:$PYTHONPATH python3 -m bytestag $DAEMON_ARGS
+PYTHONPATH=$PREFIX/share/bytestag/:$PYTHONPATH
+
+export PYTHONPATH
+
+if [ "$USE_USER" -a "$USE_GROUP" ]; then
+    sudo -u "$USE_USER" -g "$USE_GROUP" PYTHONPATH=$PYTHONPATH python3 -m bytestag $DAEMON_ARGS
+else
+    python3 -m bytestag $DAEMON_ARGS
+fi

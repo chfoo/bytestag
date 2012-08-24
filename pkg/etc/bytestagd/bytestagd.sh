@@ -1,9 +1,12 @@
 # bytestagd configuration script
 # This file is a shell script fragment
 
-CACHE_DIR=/var/cache/bytestag/
-RUNTIME_LIB_DIR=/var/lib/bytestag/
+CACHE_DIR=/var/cache/bytestagd/
+RUNTIME_LIB_DIR=/var/lib/bytestagd/
 NODE_ID_FILE=$RUNTIME_LIB_DIR/node_id
+
+USE_USER=bytestagd
+USE_GROUP=bytestagd
 
 mkdir -pv $CACHE_DIR
 mkdir -pv $RUNTIME_LIB_DIR

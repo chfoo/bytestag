@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+adduser --system --group bytestagd
+mkdir -p /var/cache/bytestagd/
+mkdir -p /var/lib/bytestagd/
+
+chown bytestagd:bytestagd -R /var/cache/bytestagd/
+chown bytestagd:bytestagd -R /var/lib/bytestagd/
+
+#DEBHELPER#
