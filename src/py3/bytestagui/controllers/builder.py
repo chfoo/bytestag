@@ -1,5 +1,5 @@
-from bytestag.ui.controllers.base import BaseController
-from bytestag.ui.views import resource
+from bytestagui.controllers.base import BaseController
+from bytestagui.views import resource
 from gi.repository import Gtk # @UnresolvedImport
 
 

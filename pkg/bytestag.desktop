@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Bytestag
+GenericName=Peer-To-Peer File Sharing Client
+Comment=Share files using Bytestag wide availability peer-to-peer network.
+TryExec=bytestag
+Exec=bytestag
+Icon=bytestag_app
+Terminal=false
+Categories=Network;FileTransfer;P2P;GTK;

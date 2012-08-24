@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PREFIX="/usr"
+DAEMON_ARGS=""
+
+if [ -e /etc/bytestagd/bytestagd.sh ]; then
+    . /etc/bytestagd/bytestagd.sh
+fi
+
+PYTHONPATH=$PREFIX/share/bytestag/:$PYTHONPATH python3 -m bytestag $DAEMON_ARGS

@@ -1,5 +1,5 @@
-from bytestag.ui.controllers.base import BaseController
-from bytestag.ui.controllers.builder import BuilderController
+from bytestagui.controllers.base import BaseController
+from bytestagui.controllers.builder import BuilderController
 from gi.repository import Gtk # @UnresolvedImport
 import bytestag
 

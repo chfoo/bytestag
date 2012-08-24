@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PREFIX="/usr"
+
+PYTHONPATH=$PREFIX/share/bytestag/:$PYTHONPATH python3 -m bytestagui

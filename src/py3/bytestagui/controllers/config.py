@@ -1,7 +1,7 @@
 from bytestag import basedir
 from bytestag.files import file_overwriter
 from bytestag.keys import KeyBytes
-from bytestag.ui.controllers.base import BaseController
+from bytestagui.controllers.base import BaseController
 from collections import OrderedDict
 import configparser
 import os.path

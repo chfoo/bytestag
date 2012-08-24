@@ -1,4 +1,4 @@
-from bytestag.ui.controllers.app import Application
+from bytestagui.controllers.app import Application
 import argparse
 import logging
 

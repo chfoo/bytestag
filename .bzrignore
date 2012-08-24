@@ -6,6 +6,5 @@ doc/apiautogen
 __pycache__
 .project
 .pydevproject
-src/py3/bitstring*
 dist
 MANIFEST

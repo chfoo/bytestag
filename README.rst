@@ -30,9 +30,10 @@ You will need:
 1. Python >=3.2
 2. Python module bitstring >=3.0
 
-If you want to GUI, you will also need:
+If you want the GUI, you will also need:
 
-3. PyGObject
+3. PyGObject >=3.0 (which should include gobject-introspection)
+4. GTK+3
 
 Install
 -------
@@ -51,7 +52,7 @@ The command line version can be run as::
 
 The GUI version can be run as::
 
-    python3 -m bytestag.ui
+    python3 -m bytestagui
 
 Contributing
 ============
@@ -68,4 +69,12 @@ The documentation is located in the doc directory. Sphinx is used to generate
 the documents.
 They will be made available online as well at 
 `<http://packages.python.org/Bytestag>`_ or possibly at readthedocs.org.
+
+Packaging
+=========
+
+Packaging scripts and templates are included in the pkg directory. 
+If packaging templates do not work, require unnecessary tweaking, 
+or violate packaging policies, please tell us.
+
 

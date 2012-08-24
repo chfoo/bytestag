@@ -1,10 +1,10 @@
-from bytestag.ui.controllers.base import BaseApplication
-from bytestag.ui.controllers.builder import BuilderController
-from bytestag.ui.controllers.config import ConfigController
-from bytestag.ui.controllers.dht import DHTClientController
-from bytestag.ui.controllers.main import MainWindowController
-from bytestag.ui.controllers.sharedfiles import SharedFilesController
-from bytestag.ui.controllers.transfers import TransfersTabController
+from bytestagui.controllers.base import BaseApplication
+from bytestagui.controllers.builder import BuilderController
+from bytestagui.controllers.config import ConfigController
+from bytestagui.controllers.dht import DHTClientController
+from bytestagui.controllers.main import MainWindowController
+from bytestagui.controllers.sharedfiles import SharedFilesController
+from bytestagui.controllers.transfers import TransfersTabController
 from gi.repository import Gtk, Gdk, GLib # @UnresolvedImport
 import signal
 import sys

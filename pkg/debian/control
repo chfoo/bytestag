@@ -1,0 +1,48 @@
+Source: bytestag
+Priority: extra
+Section: unknown/net
+Maintainer: Christopher Foo <chris.foo@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), rsync, python3-sphinx, python3, imagemagick
+Standards-Version: 3.9.2
+Homepage: https://launchpad.net/bytestag
+
+Package: bytestag
+Architecture: all
+Section: unknown/net
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag, python3-gi, python3-pkg-resources
+Description: Wide availability peer-to-peer file sharing program
+ Bytestag is a peer-to-peer (P2P) file sharing system that uses a distributed
+ hash table (DHT) to achieve wide availability of files. Unlike the BitTorrent
+ protocol, files are published entirely via DHT and do not require trackers
+ or swarming. Each computer donates disk space and bandwidth for caching of
+ published values.
+ .
+ This package contains the graphical user interface.
+
+Package: python3-bytestag
+Architecture: all
+Section: unknown/python
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3 (>= 3.2)
+Suggests: python3-bytestag-doc
+Description: Wide availability peer-to-peer file sharing
+ Bytestag is a peer-to-peer (P2P) file sharing system that uses a distributed
+ hash table (DHT) to achieve wide availability of files. Unlike the BitTorrent
+ protocol, files are published entirely via DHT and do not require trackers
+ or swarming. Each computer donates disk space and bandwidth for caching of
+ published values.
+ .
+ This package contains the Bytestag Python package.
+
+Package: bytestagd
+Architecture: all
+Section: unknown/net
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag
+Description: Bytestag peer-to-peer file sharing server
+ This package contains the Bytestag server daemon.
+
+Package: python3-bytestag-doc
+Architecture: all
+Section: unknown/doc
+Depends: ${misc:Depends}
+Description: API documentation for Bytestag
+ This package contains the HTML documentation for the Bytestag Python package.

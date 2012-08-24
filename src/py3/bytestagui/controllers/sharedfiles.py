@@ -1,7 +1,7 @@
-from bytestag.ui.controllers.base import BaseController
-from bytestag.ui.controllers.builder import BuilderController
-from bytestag.ui.controllers.config import ConfigController
-from bytestag.ui.controllers.dht import DHTClientController
+from bytestagui.controllers.base import BaseController
+from bytestagui.controllers.builder import BuilderController
+from bytestagui.controllers.config import ConfigController
+from bytestagui.controllers.dht import DHTClientController
 from gi.repository import Gtk, GLib # @UnresolvedImport
 
 

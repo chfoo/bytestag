@@ -1,9 +1,9 @@
 from bytestag.dht.network import (StoreValueTask, StoreToNodeTask,
     ReadStoreFromNodeTask)
 from bytestag.network import ReadTransferTask
-from bytestag.ui.controllers.base import BaseController
-from bytestag.ui.controllers.builder import BuilderController
-from bytestag.ui.controllers.dht import DHTClientController
+from bytestagui.controllers.base import BaseController
+from bytestagui.controllers.builder import BuilderController
+from bytestagui.controllers.dht import DHTClientController
 from gi.repository import Gtk, GLib # @UnresolvedImport
 
 

@@ -1,0 +1,9 @@
+Document: bytestag
+Title: Bytestag Documentation
+Author: Christopher Foo
+Abstract: This manual describes the Bytestag API.
+Section: unknown
+
+Format: HTML
+Index: /usr/share/doc/python3-bytestag-doc/html/index.html
+Files: /usr/share/doc/python3-bytestag-doc/html/*

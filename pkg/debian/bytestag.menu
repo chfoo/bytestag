@@ -1,0 +1,6 @@
+?package(bytestag):needs="X11" section="Applications/Network/File Transfer"\
+  title="Bytestag" \
+  longtitle="Bytestag Peer-to-Peer File Sharing Client" \
+  icon16x16="/usr/share/pixmaps/bytestag/bytestag_app_16.xpm" \
+  icon32x32="/usr/share/pixmaps/bytestag/bytestag_app_32.xpm" \
+  command="/usr/bin/bytestag"
