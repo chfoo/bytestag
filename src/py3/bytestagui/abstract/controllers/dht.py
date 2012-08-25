@@ -1,17 +1,24 @@
+'''DHT Network'''
+# This file is part of Bytestag.
+# Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
+# Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestag import basedir
 from bytestag.client import Client
 from bytestag.events import Observer
 from bytestag.keys import KeyBytes
-from bytestagui.controllers.base import BaseController
-from bytestagui.controllers.builder import BuilderController
-from bytestagui.controllers.config import ConfigController
-from gi.repository import GLib # @UnresolvedImport
+from bytestagui.abstract.controllers.base import BaseController
+from bytestagui.abstract.controllers.config import ConfigController
+import abc
 import os
+import threading
 
 
-class DHTClientController(BaseController):
+class DHTClientController(BaseController, metaclass=abc.ABCMeta):
+    DISCONNECTED, CONNECTING, CONNECTED = range(3)
+
     def __init__(self, application):
         BaseController.__init__(self, application)
+        self._observer = Observer()
 
         config_parser = self.application.singletons[
             ConfigController].config_parser
@@ -29,32 +36,28 @@ class DHTClientController(BaseController):
         self._client = Client(basedir.cache_dir, (host, port), node_id)
         self._client.start()
 
-        builder = self.application.singletons[BuilderController].builder
-        statusbar = builder.get_object('main_statusbar')
-        self._statusbar = statusbar
-        self._context_id = statusbar.get_context_id('DHT Network')
-
-        GLib.timeout_add(100, self._join_network)
+        thread = threading.Timer(2, self.connect)
+        thread.daemon = True
+        thread.start()
 
     @property
     def client(self):
         return self._client
 
-    def _join_network(self):
-        self._statusbar.pop(self._context_id)
-        self._statusbar.push(self._context_id, 'Connecting to network…')
+    @property
+    def observer(self):
+        return self._observer
+
+    def connect(self):
+        self.observer(DHTClientController.CONNECTING)
 
         join_network_task = self._client.dht_network.join_network(
             self._known_node_address)
 
         def cb(result):
-            self._statusbar.pop(self._context_id)
-
             if result:
-                self._statusbar.push(self._context_id, 'Connected to network.')
+                self.observer(DHTClientController.CONNECTED)
             else:
-                self._statusbar.push(self._context_id,
-                    'Could not connect to network.')
+                self.observer(DHTClientController.DISCONNECTED)
 
-        join_network_task.observer.register(
-            lambda *args: GLib.idle_add(cb(*args)))
+        join_network_task.observer.register(cb)

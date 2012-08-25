@@ -42,6 +42,8 @@ class Client(threading.Thread):
         self._download_slot = FnTaskSlot()
         self._initial_scan = initial_scan
 
+        self._init()
+
     @property
     def cache_table(self):
         '''The :class:`DatabaseKVPTable`'''
@@ -76,7 +78,7 @@ class Client(threading.Thread):
     def network(self):
         return self._network
 
-    def run(self):
+    def _init(self):
         self._dht_network = DHTNetwork(self._event_reactor,
             self._aggregated_kvp_table, self._node_id, self._network,
             self._download_slot)
@@ -85,6 +87,7 @@ class Client(threading.Thread):
         self._replicator = Replicator(self._event_reactor, self._dht_network,
             self._aggregated_kvp_table, self._upload_slot)
 
+    def run(self):
         if self._known_node_address:
             self._dht_network.join_network(self._known_node_address)
             # TODO: put warning if join fails, but don't check on

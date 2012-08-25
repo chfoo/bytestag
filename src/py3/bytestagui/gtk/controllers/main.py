@@ -1,5 +1,9 @@
-from bytestagui.controllers.base import BaseController
-from bytestagui.controllers.builder import BuilderController
+'''Main window'''
+# This file is part of Bytestag.
+# Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
+# Licensed under GNU GPLv3. See COPYING.txt for details.
+from bytestagui.abstract.controllers.base import BaseController
+from bytestagui.gtk.controllers.builder import BuilderController
 from gi.repository import Gtk # @UnresolvedImport
 import bytestag
 
