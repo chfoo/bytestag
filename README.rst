@@ -58,6 +58,39 @@ The GUI version can be run as::
 
     python3 -m bytestagui
 
+With cx_freeze (Windows, MacOS)
++++++++++++++++++++++++++++++++
+
+Dependencies
+------------
+
+1. Python >= 3.2
+2. PySide which should match the Python version and whether it is
+   32 or 64 bit.
+3. cx_freeze (which, again, should match the Python version you
+   installed.)
+4. If Windows, pywin32 extensions (matching Python version and 32/64 bit)
+
+Build
+-----
+
+1. Run the command in project directory
+   ``python setup_cx_freeze.py build``. If you are using Windows,
+   I suggest using the Power Shell.
+2. Change directory into ``build/XXXXX`` and test running the executable.
+3. Change back to the project directory and run the command
+   ``python setup_cx_freeze.py bdist_msi`` or
+   ``python setup_cx_freeze.py bdist_dmg``
+   to generate the installers or disk images.
+
+For Windows, Microsoft Visual C++ 2008 Redistributable Package is needed.
+SP1 is not needed. Be sure to match 32 or 64 bit. 
+Read the cx_freeze documentation for details.
+
+If it crashes hard on Windows, install the Windows Debugger Tools (WinDbg) 
+to attach to the process and see which module failed to import. 
+It is usually a missing DLL.
+
 Contributing
 ============
 
