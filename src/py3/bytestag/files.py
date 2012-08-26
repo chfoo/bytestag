@@ -21,7 +21,7 @@ def file_overwriter(path, flags='wb'):
     if os.path.exists(path):
         shutil.copy(path, old_temp_path)
 
-    if platform.system() == 'Windows':
+    if platform.system() == 'Windows' and os.path.exists(path):
         os.remove(path)
 
     os.rename(new_temp_path, path)

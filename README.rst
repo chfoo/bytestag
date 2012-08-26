@@ -36,6 +36,7 @@ If you want the GUI (for GNU/Linux), you will also need:
 2. GTK+3
 
 If you want the GUI (for Windows, MacOS, etc.), you will need:
+
 1. PySide
 2. Qt
 
@@ -65,6 +66,36 @@ The project page is located at `<https://launchpad.net/bytestag>`_. Code,
 bug reports, translations, and questions are welcomed there.
 
 The code is occasionally mirrored at `<https://github.com/chfoo/bytestag>`_.
+
+Project directory structure
++++++++++++++++++++++++++++
+
+A suggested local project directory structure is as follows::
+
+    bytestag/bytestag.bzr/trunk/
+    bytestag/bytestag.bzr/unstable/
+    bytestag/bytestag.bzr/stable/
+    bytestag/bytestag.bzr/branches/bug-NNNNN/
+    bytestag/bytestag.bzr/branches/feature-XXXXX/
+
+``bytestag.bzr`` is a Bzr shared repository. It is usually created by
+executing ``bzr init-repo --no-trees bytestag.bzr`` in the ``bytestag``
+directory.
+
+You might not want to work with Bzr, so use you can put a repo next to it::
+
+    bytestag/bytestag.git/
+
+For more structure/layout ideas, see 
+`<http://wiki.bazaar.canonical.com/SharedRepositoryLayouts`>_.
+
+
+Tags
+++++
+
+Release tags for any version (alpha, beta, etc.) should use
+``vN.N[.N]+[{a|b|c|rc}N[.N]+]``. For example: ``v1.2b``.
+
 
 Documentation
 =============

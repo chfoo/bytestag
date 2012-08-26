@@ -4,12 +4,25 @@ import argparse
 import os.path
 import os
 import subprocess
+import textwrap
 
 def main():
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('branch', help='The git branch name')
+    arg_parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent('''\
+            Your project should be set up like so:
+
+                bytestag/bytestag.bzr/BRANCH_NAME/
+                bytestag/bytestag.bzr/CATEGORY/BRANCH_NAME
+                bytestag/bytestag.git/
+
+            Where bytestag.bzr is a shared repository and bytestag.git is
+            a git repository. See README.
+            ''')
+        )
+    arg_parser.add_argument('branch', help='The git branch name',)
     arg_parser.add_argument('--repo-dir',
-        default=os.path.join('..', 'bytestag.git'),
+        default=os.path.join('..', '..', 'bytestag.git'),
         help='The directory of the repo to switch to')
 
     args = arg_parser.parse_args()
