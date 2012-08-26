@@ -5,7 +5,7 @@
 from bytestagui.abstract.controllers.base import BaseController
 from bytestagui.gtk.controllers.builder import BuilderController
 from gi.repository import Gtk # @UnresolvedImport
-import bytestag
+import bytestagui
 
 
 class MainWindowController(BaseController):
@@ -29,7 +29,7 @@ class MainWindowController(BaseController):
         window.show_all()
 
         about_dialog = builder.get_object('about_dialog')
-        about_dialog.set_version(bytestag.__version__)
+        about_dialog.set_version(bytestagui.__version__)
 
     def _main_window_delete_event_cb(self, *args):
         self.application.stop()

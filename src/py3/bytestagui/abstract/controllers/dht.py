@@ -15,6 +15,9 @@ import threading
 
 class DHTClientController(BaseController, metaclass=abc.ABCMeta):
     DISCONNECTED, CONNECTING, CONNECTED = range(3)
+    CONNECTING_MSG = 'Connecting to network…'
+    CONNECTED_MSG = 'Connected to network.'
+    DISCONNECTED_MSG = 'Disconnected from network.'
 
     def __init__(self, application):
         BaseController.__init__(self, application)

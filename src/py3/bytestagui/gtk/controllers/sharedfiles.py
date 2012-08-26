@@ -2,16 +2,17 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.base import BaseController
 from bytestagui.abstract.controllers.config import ConfigController
-from bytestagui.gtk.controllers.dht import DHTClientController
+from bytestagui.abstract.controllers.sharedfiles import (
+    SharedFilesController as BaseSharedFilesController)
 from bytestagui.gtk.controllers.builder import BuilderController
+from bytestagui.gtk.controllers.dht import DHTClientController
 from gi.repository import Gtk, GLib # @UnresolvedImport
 
 
-class SharedFilesController(BaseController):
+class SharedFilesController(BaseSharedFilesController):
     def __init__(self, application):
-        BaseController.__init__(self, application)
+        BaseSharedFilesController.__init__(self, application)
         self._builder = self.application.singletons[BuilderController].builder
         self._paths_shown = set()
         self._scan_task = None
@@ -37,14 +38,15 @@ class SharedFilesController(BaseController):
 
         self._disable_scan_ui()
         self._create_tree_view_columns()
-        self._load_shared_files_config()
+        self._populate_tree_view()
 
     def _create_tree_view_columns(self):
         builder = self._builder
         shared_files_tree_view = builder.get_object('shared_files_tree_view')
 
         path_cell_renderer = Gtk.CellRendererText()
-        path_column = Gtk.TreeViewColumn('Folder', path_cell_renderer,
+        path_column = Gtk.TreeViewColumn(
+            BaseSharedFilesController.DIRECTORY_HEADER, path_cell_renderer,
             text=0)
 
         shared_files_tree_view.append_column(path_column)
@@ -76,9 +78,7 @@ class SharedFilesController(BaseController):
         model, tree_iter = selection.get_selected()
         path = model[tree_iter][0]
 
-        directories = self.application.singletons[DHTClientController
-            ].client.shared_files_table.shared_directories
-        directories.remove(path)
+        self._shared_directories.remove(path)
         self._paths_shown.remove(path)
         del model[tree_iter]
         self._save_shared_files_config()
@@ -117,49 +117,18 @@ class SharedFilesController(BaseController):
         return True
 
     def _add_directory(self, path):
-        directories = self.application.singletons[
-            DHTClientController].client.shared_files_table.shared_directories
-
-        if path not in directories:
-            directories.append(path)
+        if path not in self._shared_directories:
+            self._shared_directories.append(path)
 
         self._populate_tree_view()
 
     def _populate_tree_view(self):
-        directories = self.application.singletons[
-            DHTClientController].client.shared_files_table.shared_directories
         list_store = self._builder.get_object('shared_files_list_store')
 
-        for path in directories:
+        for path in self._shared_directories:
             if path not in self._paths_shown:
                 self._paths_shown.add(path)
                 list_store.append([path])
-
-    def _load_shared_files_config(self):
-        config_parser = self.application.singletons[
-            ConfigController].config_parser
-        directories = self.application.singletons[
-            DHTClientController].client.shared_files_table.shared_directories
-
-        for key in config_parser['shared_files'].keys():
-            directories.append(config_parser['shared_files'][key])
-
-        self._populate_tree_view()
-
-    def _save_shared_files_config(self):
-        config_parser = self.application.singletons[
-            ConfigController].config_parser
-        directories = self.application.singletons[
-            DHTClientController].client.shared_files_table.shared_directories
-
-        config_parser['shared_files'] = {}
-
-        for i in range(len(directories)):
-            directory = directories[i]
-
-            config_parser['shared_files']['path{}'.format(i)] = directory
-
-        self.application.singletons[ConfigController].save()
 
     def _update_scan_progress(self):
         if self._scan_task:
