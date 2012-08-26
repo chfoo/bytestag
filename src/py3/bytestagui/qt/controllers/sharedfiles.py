@@ -5,6 +5,7 @@
 from PySide import QtGui, QtCore
 from bytestagui.abstract.controllers.sharedfiles import (
     SharedFilesController as BaseSharedFilesController)
+from bytestagui.qt.controllers.dht import DHTClientController
 from bytestagui.qt.controllers.invoker import invoke_in_main_thread
 from bytestagui.qt.controllers.loader import LoaderController
 
@@ -37,7 +38,7 @@ class SharedFilesTableModel(QtCore.QAbstractTableModel):
 
         if orientation == QtCore.Qt.Horizontal:
             if section == 0:
-                return BaseSharedFilesController.DIRECTORY_HEADER
+                return BaseSharedFilesController.DIRECTORY_HEADER_TEXT
 
     def append(self, filename):
         index = QtCore.QModelIndex()
@@ -66,6 +67,7 @@ class SharedFilesController(BaseSharedFilesController):
     def __init__(self, application):
         BaseSharedFilesController.__init__(self, application)
 
+        self._scan_task = None
         loader = self.application.singletons[LoaderController]
         self._main_window = loader.main_window
 
@@ -79,9 +81,17 @@ class SharedFilesController(BaseSharedFilesController):
             self._shared_files_table_view_activated_cb)
         loader.connect(self._main_window.shared_files_table_view.clicked,
             self._shared_files_table_view_activated_cb)
+        loader.connect(self._main_window.shared_files_scan_button.clicked,
+            self._shared_files_scan_button_clicked_cb)
+        loader.connect(self._main_window.shared_files_scan_stop_button.clicked,
+            self._shared_files_scan_stop_button_clicked_cb)
 
         self._disable_scan_ui()
         self._create_tree_view_columns()
+
+        timer = QtCore.QTimer(self.application.app)
+        timer.timeout.connect(self._update_scan_progress)
+        timer.start(200)
 
     def _create_tree_view_columns(self):
         table_view = self._main_window.shared_files_table_view
@@ -96,11 +106,20 @@ class SharedFilesController(BaseSharedFilesController):
         for item in (layout.itemAt(i) for i in range(layout.count())):
             item.widget().hide()
 
+        if self._scan_task:
+            assert self._scan_task.is_finished
+
+        self._scan_task = None
+
+        self._main_window.shared_files_scan_button.setEnabled(True)
+
     def _enable_scan_ui(self):
         layout = self._main_window.shared_files_scan_layout
 
         for item in (layout.itemAt(i) for i in range(layout.count())):
             item.widget().show()
+
+        self._main_window.shared_files_scan_button.setEnabled(False)
 
     def _shared_files_add_button_clicked_cb(self, *args):
         dialog = QtGui.QFileDialog(self._main_window)
@@ -127,3 +146,32 @@ class SharedFilesController(BaseSharedFilesController):
 
     def _shared_files_table_view_activated_cb(self, index):
         self._main_window.shared_files_remove_button.setEnabled(True)
+
+    def _shared_files_scan_button_clicked_cb(self, *args):
+        self._enable_scan_ui()
+
+        self._scan_task = self.application.singletons[
+            DHTClientController].client.shared_files_table.hash_directories()
+
+        def f(*args):
+            invoke_in_main_thread(self._disable_scan_ui)
+
+        self._scan_task.observer.register(f)
+        #FIXME: timer
+
+    def _shared_files_scan_stop_button_clicked_cb(self, *args):
+        def f(*args):
+            invoke_in_main_thread(self._disable_scan_ui)
+
+        self._scan_task.observer.register(f)
+        self._scan_task.stop()
+
+    def _update_scan_progress(self):
+        if self._scan_task:
+            filename, bytes_read = self._scan_task.progress
+
+            # FIXME: l10n support
+            self._main_window.shared_files_scan_label.setText(
+                BaseSharedFilesController.SCAN_PROGRESS_TEXT.format(
+                filename=filename, bytes_read=bytes_read)
+            )

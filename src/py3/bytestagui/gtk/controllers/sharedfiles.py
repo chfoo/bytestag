@@ -46,7 +46,7 @@ class SharedFilesController(BaseSharedFilesController):
 
         path_cell_renderer = Gtk.CellRendererText()
         path_column = Gtk.TreeViewColumn(
-            BaseSharedFilesController.DIRECTORY_HEADER, path_cell_renderer,
+            BaseSharedFilesController.DIRECTORY_HEADER_TEXT, path_cell_renderer,
             text=0)
 
         shared_files_tree_view.append_column(path_column)
@@ -85,6 +85,7 @@ class SharedFilesController(BaseSharedFilesController):
 
     def _shared_files_scan_button_clicked_cb(self, widget, *args):
         self._enable_scan_ui()
+
         self._scan_task = self.application.singletons[
             DHTClientController].client.shared_files_table.hash_directories()
 
@@ -137,8 +138,10 @@ class SharedFilesController(BaseSharedFilesController):
                 'shared_files_scan_label')
 
             # FIXME: l10n support
-            shared_files_scan_label.set_text('Scanning file {} ({})'.format(
-                filename, bytes_read))
+            shared_files_scan_label.set_text(
+                BaseSharedFilesController.SCAN_PROGRESS_TEXT.format(
+                filename=filename, bytes_read=bytes_read)
+            )
 
             return True
 

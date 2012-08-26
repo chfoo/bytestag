@@ -6,7 +6,8 @@ from bytestagui.abstract.controllers.base import BaseController
 
 
 class SharedFilesController(BaseController):
-    DIRECTORY_HEADER = 'Folder'
+    DIRECTORY_HEADER_TEXT = 'Folder'
+    SCAN_PROGRESS_TEXT = 'Scanning file {filename} ({bytes_read})'
 
     def __init__(self, application):
         BaseController.__init__(self, application)
