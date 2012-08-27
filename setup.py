@@ -16,7 +16,7 @@ setup(name='Bytestag',
     author='Christopher Foo',
     author_email='chris.foo@gmail.com',
     url='https://launchpad.net/bytestag',
-    packages=['bytestag', 'bytestag.dht', 
+    packages=['bytestag', 'bytestag.dht', 'bytestag.lib', 
     ],
     package_dir={'': src_dir},
     package_data={

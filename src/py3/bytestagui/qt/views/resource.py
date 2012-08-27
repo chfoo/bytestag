@@ -2,10 +2,11 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
+import bytestag.lib.pkg_resources
 import bytestagui.abstract.views.resource
 import bytestagui.qt.views
 import os.path
-import bytestag.lib.pkg_resources
+import sys
 
 
 class Resource(bytestagui.abstract.views.resource.Resource):
@@ -17,9 +18,11 @@ class Resource(bytestagui.abstract.views.resource.Resource):
         except IOError:
             return Resource.get_bytes_fallback(name)
 
+    # TODO: push these methods up into abstract
     @classmethod
     def get_fallback_path(cls, name):
-        return os.path.join(os.getcwd(), 'bytestagui', 'qt', 'views',
+        appdir = os.path.dirname(sys.argv[0])
+        return os.path.join(appdir, 'bytestagui', 'qt', 'views',
             *name.split('/'))
 
     @classmethod

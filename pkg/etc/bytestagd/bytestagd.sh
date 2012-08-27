@@ -18,5 +18,5 @@ else
     echo $NODE_ID > $NODE_ID_FILE
 fi
 
-DAEMON_ARGS="--cache-dir $CACHE_DIR --host 0.0.0.0 --port 38664 --node-id $NODE_ID"
+DAEMON_ARGS="--cache-dir $CACHE_DIR --host 0.0.0.0 --port 38664 --node-id $NODE_ID --known-node torwuf.com:38664"
 

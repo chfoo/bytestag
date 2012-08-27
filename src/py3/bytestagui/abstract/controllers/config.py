@@ -22,8 +22,8 @@ class ConfigController(BaseController):
                 ('node_id', KeyBytes().base64),
             ])),
             ('known_nodes', OrderedDict([
-                ('host1', 'localhost'),
-                ('port1', 12345),
+                ('host1', 'torwuf.com'),
+                ('port1', 38664),
             ])),
             ('shared_files', OrderedDict([
             ])),

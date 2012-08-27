@@ -82,3 +82,5 @@ install-daemon: build-daemon
 
 clean-daemon:
 
+build-app-ico-file:
+	convert img/logo/hicolor/*x*/apps/bytestag_app.png img/logo/bytestag_app.ico
