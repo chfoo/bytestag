@@ -12,7 +12,7 @@ This software is currently under development.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 __docformat__ = 'restructuredtext en'
-short_version = '0.0'  # N.N
-__version__ = '0.0.0'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
+short_version = '0.1'  # N.N
+__version__ = '0.1a'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
 description, long_description = __doc__.split('\n', 1)
 long_description = long_description.lstrip()

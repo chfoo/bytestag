@@ -120,7 +120,7 @@ You might not want to work with Bzr, so use you can put a repo next to it::
     bytestag/bytestag.git/
 
 For more structure/layout ideas, see 
-`<http://wiki.bazaar.canonical.com/SharedRepositoryLayouts`>_.
+`<http://wiki.bazaar.canonical.com/SharedRepositoryLayouts>`_.
 
 
 Tags
@@ -135,8 +135,7 @@ Documentation
 
 The documentation is located in the doc directory. Sphinx is used to generate
 the documents.
-They will be made available online as well at 
-`<http://packages.python.org/Bytestag>`_ or possibly at readthedocs.org.
+They will be made available online when ready.
 
 Packaging
 =========
