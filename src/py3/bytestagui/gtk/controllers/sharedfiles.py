@@ -2,9 +2,10 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.config import ConfigController
 from bytestagui.abstract.controllers.sharedfiles import (
     SharedFilesController as BaseSharedFilesController)
+from bytestagui.abstract.views.sharedfiles import (DIRECTORY_HEADER_TEXT,
+    SCAN_PROGRESS_TEXT)
 from bytestagui.gtk.controllers.builder import BuilderController
 from bytestagui.gtk.controllers.dht import DHTClientController
 from gi.repository import Gtk, GLib # @UnresolvedImport
@@ -45,9 +46,8 @@ class SharedFilesController(BaseSharedFilesController):
         shared_files_tree_view = builder.get_object('shared_files_tree_view')
 
         path_cell_renderer = Gtk.CellRendererText()
-        path_column = Gtk.TreeViewColumn(
-            BaseSharedFilesController.DIRECTORY_HEADER_TEXT, path_cell_renderer,
-            text=0)
+        path_column = Gtk.TreeViewColumn(DIRECTORY_HEADER_TEXT,
+            path_cell_renderer, text=0)
 
         shared_files_tree_view.append_column(path_column)
 
@@ -138,8 +138,7 @@ class SharedFilesController(BaseSharedFilesController):
                 'shared_files_scan_label')
 
             # FIXME: l10n support
-            shared_files_scan_label.set_text(
-                BaseSharedFilesController.SCAN_PROGRESS_TEXT.format(
+            shared_files_scan_label.set_text(SCAN_PROGRESS_TEXT.format(
                 filename=filename, bytes_read=bytes_read)
             )
 

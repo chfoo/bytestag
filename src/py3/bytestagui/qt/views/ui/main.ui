@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="shared_files_tab">
        <attribute name="title">
@@ -150,7 +150,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QListView" name="transfers_list_view"/>
+         <widget class="QTableView" name="transfers_table_view"/>
         </item>
        </layout>
       </widget>

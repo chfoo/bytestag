@@ -4,6 +4,8 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestagui.abstract.controllers.dht import (
     DHTClientController as BaseDHTClientController)
+from bytestagui.abstract.views.dht import (CONNECTING_MSG, CONNECTED_MSG,
+    DISCONNECTED_MSG)
 from bytestagui.gtk.controllers.builder import BuilderController
 from gi.repository import GLib # @UnresolvedImport
 
@@ -22,11 +24,8 @@ class DHTClientController(BaseDHTClientController):
         self._statusbar.pop(self._context_id)
 
         if status == BaseDHTClientController.CONNECTING:
-            self._statusbar.push(self._context_id,
-                BaseDHTClientController.CONNECTING_MSG)
+            self._statusbar.push(self._context_id, CONNECTING_MSG)
         elif status == BaseDHTClientController.CONNECTED:
-            self._statusbar.push(self._context_id, 
-                BaseDHTClientController.CONNECTED_MSG)
+            self._statusbar.push(self._context_id, CONNECTED_MSG)
         else:
-            self._statusbar.push(self._context_id,
-                BaseDHTClientController.DISCONNECTED_MSG)
+            self._statusbar.push(self._context_id, DISCONNECTED_MSG)
