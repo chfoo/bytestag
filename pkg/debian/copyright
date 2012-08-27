@@ -29,3 +29,10 @@ License: GPL-3+
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
 
+Files: src/py3/bytestag/lib/_bitstring*
+Copyright: 2006-2012 Scott Griffiths (scott@griffiths.name)
+License: MIT License
+
+Files: src/py3/bytestag/lib/_pkg_resources*
+Copyright: Phillip J. Eby, Tarek Ziade and the distutils SIG
+License: PSF or ZPL

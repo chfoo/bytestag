@@ -1,9 +1,24 @@
 Concerning the source code
 ==========================
 
+Except where noted: 
+
 Copyright © 2012 Christopher Foo <chris.foo@gmail.com>
 Licensed under GNU General Public License Version 3. See GPLv3.txt or visit
 <http://www.gnu.org/licenses/>.
+
+Bitstring
++++++++++
+
+Copyright (c) 2006-2012 Scott Griffiths (scott@griffiths.name)
+Licensed under the MIT License. See source code.
+
+pkg_resources
++++++++++++++
+
+From distribute. <http://pypi.python.org/pypi/distribute/>
+Copyright Phillip J. Eby, Tarek Ziade and the distutils SIG
+Licensed under the Python Software Foundation license or Zope Public License.
 
 
 Concerning the images and documentation

@@ -36,9 +36,6 @@ build-app:
 	rsync --verbose --recursive --times \
 		--exclude '*~' --exclude '__pycache__' --exclude '~.pyc' \
 		src/py3/bytestagui build/share/bytestag/
-	rsync --verbose --recursive --times \
-		--exclude '*~' --exclude '__pycache__' --exclude '~.pyc' \
-		src/py3/bitstring.py build/share/bytestag/
 		
 	mkdir -pv build/pixmaps/
 	

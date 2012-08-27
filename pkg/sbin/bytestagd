@@ -7,7 +7,7 @@ if [ -e /etc/bytestagd/bytestagd.sh ]; then
     . /etc/bytestagd/bytestagd.sh
 fi
 
-PYTHONPATH=$PREFIX/share/bytestag/:$PYTHONPATH
+PYTHONPATH=$PYTHONPATH
 
 export PYTHONPATH
 

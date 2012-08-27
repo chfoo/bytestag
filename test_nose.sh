@@ -1,6 +1,6 @@
 #!/bin/sh
 
-nosetests3 -w src/py3/ \
+nosetests3 src/py3/bytestag \
 	--logging-format \
 	"%(message)s
   %(asctime)s %(name)s:%(lineno)s %(levelname)s %(threadName)s:%(thread)d" \

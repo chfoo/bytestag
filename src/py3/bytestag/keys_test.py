@@ -1,7 +1,7 @@
 '''KeyBytes value testing'''
-from bitstring import Bits
-from bytestag.keys import (KeyBytes, leading_zero_bits, compute_bucket_number, 
-    random_bucket_key, bytes_to_b64, bytes_to_b32, bytes_to_b16, b64_to_bytes, 
+from bytestag.lib.bitstring import Bits
+from bytestag.keys import (KeyBytes, leading_zero_bits, compute_bucket_number,
+    random_bucket_key, bytes_to_b64, bytes_to_b32, bytes_to_b16, b64_to_bytes,
     b32_to_bytes, b16_to_bytes)
 import unittest
 
