@@ -6,11 +6,15 @@ clean: clean-doc clean-py clean-app clean-daemon
 	find src/py3/ -type d -name '__pycache__' -exec rm -r {} +
 
 build-doc:
-	mkdir -p doc/apiautogen/
-	echo "This directory and its files were generated automatically. Do not edit!" \
-		> doc/apiautogen/README
-	sphinx-apidoc src/py3/bytestag -o doc/apiautogen/ -f
 	make -C doc/ html
+
+force-build-doc:
+	mkdir -p doc/api/
+	echo "This directory and its files were generated automatically by \
+	the Makefile force-build-doc target. \
+	Do not edit!" \
+		> doc/api/README
+	sphinx-apidoc src/py3/bytestag -o doc/api/ -f
 
 install-doc: build-doc
 	mkdir -pv $(DESTDIR)/usr/share/doc/pybytestag/

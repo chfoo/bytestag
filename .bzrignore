@@ -1,7 +1,6 @@
 out
 build
 doc/_build
-doc/apiautogen
 .coverage
 __pycache__
 .project

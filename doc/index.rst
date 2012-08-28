@@ -18,7 +18,7 @@ Contents:
    faq
    release_notes
    protocol
-   API Reference <apiautogen/modules>
+   API Reference <api/modules>
 
 Indices and tables
 ==================
