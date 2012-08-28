@@ -11,13 +11,17 @@ published values.
 
 This software is currently under development.
 
+..  The above summary is from bytestag.__init__.py. 
+    Be sure to edit this file as well.
+
 Installation
 ============
 
 Pre-Built Packages
 ++++++++++++++++++
 
-Pre-built packages are not ready yet.
+Please check `the wiki <https://github.com/chfoo/bytestag/wiki/>`_ for the
+latest information about packages.
 
 From Source
 +++++++++++
@@ -127,7 +131,7 @@ Tags
 ++++
 
 Release tags for any version (alpha, beta, etc.) should use
-``vN.N[.N]+[{a|b|c|rc}N[.N]+]``. For example: ``v1.2b``.
+``vN.N[.N]+[{a|b|c|rc}N[.N]+]``. For example: ``v1.2b1``.
 
 
 Documentation
@@ -136,6 +140,8 @@ Documentation
 The documentation is located in the doc directory. Sphinx is used to generate
 the documents.
 They will be made available online when ready.
+
+Please update the release notes in the doc directory for releases.
 
 Packaging
 =========

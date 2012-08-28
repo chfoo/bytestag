@@ -1,0 +1,5 @@
+About
+=====
+
+.. automodule:: bytestag
+

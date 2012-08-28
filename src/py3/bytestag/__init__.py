@@ -14,8 +14,8 @@ This software is currently under development.
 import distutils.version
 
 __docformat__ = 'restructuredtext en'
-short_version = '0.1'  # N.N
-__version__ = '0.1b1'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
+short_version = '0.2'  # N.N
+__version__ = '0.2a1'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
 description, long_description = __doc__.split('\n', 1)
 long_description = long_description.lstrip()
 

@@ -11,7 +11,13 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
+   about
+   downloads
+   concept
    readme
+   faq
+   release_notes
+   protocol
    API Reference <apiautogen/modules>
 
 Indices and tables
