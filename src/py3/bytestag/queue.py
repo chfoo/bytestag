@@ -22,15 +22,10 @@ class BigDiskQueue(object):
     '''
 
     def __init__(self, memory_size=100):
-        self._temp_dir = tempfile.TemporaryDirectory(suffix='-queue')
-        self._path = os.path.join(self._temp_dir.name, 'queue.db')
         self._queue = queue.Queue(memory_size)
         self._event = threading.Event()
+        self._tables_created = False
 
-        # FIXME: tempdir isn't being cleaned, perhaps problem with threads
-        atexit.register(self._temp_dir.cleanup)
-
-        self._create_tables()
         self._loop()
 
     @contextlib.contextmanager
@@ -45,8 +40,15 @@ class BigDiskQueue(object):
             yield con
 
     def _create_tables(self):
+        self._tables_created = True
+        self._temp_dir = tempfile.TemporaryDirectory(suffix='-queue')
+        self._path = os.path.join(self._temp_dir.name, 'queue.db')
+
+        # FIXME: tempdir isn't being cleaned, perhaps problem with threads
+        atexit.register(self._temp_dir.cleanup)
+
         with self._connection() as con:
-            con.execute('CREATE TABLE queue '
+            con.execute('CREATE TABLE IF NOT EXISTS queue '
                 '(id INTEGER PRIMARY KEY, pickle BLOB NOT NULL)')
 
     def put(self, item, block=None, timeout=None):
@@ -59,6 +61,9 @@ class BigDiskQueue(object):
         try:
             self._queue.put_nowait(item)
         except queue.Full:
+            if not self._tables_created:
+                self._create_tables()
+
             self._put_database(item)
 
     def put_nowait(self, item):

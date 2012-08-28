@@ -28,5 +28,5 @@ setup(name='Bytestag',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python :: 3.2',
     ],
-    requires=['bitstring (>=3.0)',]
+    requires=[],
 )

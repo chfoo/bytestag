@@ -6,7 +6,6 @@ See `<http://stackoverflow.com/questions/10991991>`_
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtCore # @UnresolvedImport
-import threading
 
 
 class InvokeEvent(QtCore.QEvent):

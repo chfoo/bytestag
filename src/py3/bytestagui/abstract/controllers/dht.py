@@ -64,3 +64,8 @@ class DHTClientController(BaseController, metaclass=abc.ABCMeta):
                 self.observer(DHTClientController.DISCONNECTED)
 
         join_network_task.observer.register(cb)
+
+    def stop(self, wait=True):
+        self._client.stop()
+        self._client.network._pool_executor.shutdown(wait)
+        self._client.dht_network._pool_executor.shutdown(wait)

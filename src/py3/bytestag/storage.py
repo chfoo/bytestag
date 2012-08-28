@@ -326,6 +326,8 @@ class DatabaseKVPTable(KVPTable, SQLite3Mixin):
 class DatabaseKVPRecord(KVPRecord):
     '''The record associated with :class:`DatabaseKVPTable`.'''
 
+    __slots__ = ('_table', '_kvpid')
+
     def __init__(self, table, kvpid):
         self._table = table
         self._kvpid = kvpid
@@ -571,6 +573,8 @@ class SharedFilesRecord(KVPRecord):
     :see: :class:`SharedFileHashRecord`
     '''
 
+    __slots__ = ('_table', '_kvpid')
+
     def __init__(self, table, kvpid):
         self._table = table
         self._kvpid = kvpid
@@ -646,6 +650,8 @@ class SharedFileHashRecord(KVPRecord):
 
     :see: :class:`SharedFileRecord`
     '''
+
+    __slots__ = ('_table', '_kvpid')
 
     def __init__(self, table, kvpid):
         self._table = table

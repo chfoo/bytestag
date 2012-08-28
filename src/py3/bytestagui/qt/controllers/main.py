@@ -17,6 +17,7 @@ class MainWindowController(BaseController):
 
         main_window.about_action.activated.connect(
             self._about_action_activated_cb)
+        main_window.quit_action.activated.connect(self.application.stop)
 
         main_window.show()
 

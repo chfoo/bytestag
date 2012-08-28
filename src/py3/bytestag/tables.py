@@ -111,7 +111,7 @@ class KVPTable(metaclass=abc.ABCMeta):
         pass
 
     def records_by_key(self, key):
-        '''Return a list of :class:`KVPRecord` associated with givne key.'''
+        '''Return a list of :class:`KVPRecord` associated with given key.'''
 
         l = []
 

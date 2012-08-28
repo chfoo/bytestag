@@ -6,15 +6,15 @@ from bytestag.dht.models import (NodeList, JSONKeys, KVPExchangeInfoList,
     KVPExchangeInfo)
 from bytestag.dht.tables import Bucket, RoutingTable, Node, BucketFullError
 from bytestag.events import (EventReactorMixin, EventScheduler, EventID,
-    asynchronous, Task, Observer, FnTaskSlot)
+    asynchronous, Task, Observer, FnTaskSlot, WrappedThreadPoolExecutor)
 from bytestag.keys import KeyBytes, compute_bucket_number, random_bucket_key
 from bytestag.network import Network, ReadTransferTask
 from bytestag.tables import KVPID
 import collections
-import concurrent.futures
 import io
 import logging
 import math
+import socket
 import threading
 import time
 
@@ -66,8 +66,8 @@ class DHTNetwork(EventReactorMixin):
         self._network.receive_callback = self._receive_callback
         self._routing_table = RoutingTable()
         self._key = node_id or KeyBytes()
-        self._pool_executor = concurrent.futures.ThreadPoolExecutor(
-            Network.DEFAULT_POOL_SIZE / 2)
+        self._pool_executor = WrappedThreadPoolExecutor(
+            Network.DEFAULT_POOL_SIZE / 2, event_reactor)
         self._kvp_table = kvp_table
         self._event_scheduler = EventScheduler(event_reactor)
         self._refresh_timer_id = EventID(self, 'Refresh')
@@ -993,6 +993,7 @@ class JoinNetworkTask(Task):
     def run(self, controller, address):
         _logger.info('Joining network')
 
+        address = (socket.gethostbyname(address[0]),) + address[1:]
         task = controller.ping_address(address)
 
         self.hook_task(task)

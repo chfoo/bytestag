@@ -2,8 +2,10 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
+from concurrent.futures.thread import ThreadPoolExecutor
 from queue import Queue
 from threading import Lock
+from weakref import WeakValueDictionary
 import functools
 import heapq
 import inspect
@@ -591,6 +593,30 @@ class FnTaskSlot(threading.Thread):
 
         for task in self._current_tasks:
             task.stop()
+
+
+class WrappedThreadPoolExecutor(ThreadPoolExecutor, EventReactorMixin):
+    '''Wraps a :class:`.ThreadPoolExecutor` that listens to a stop event'''
+
+    def __init__(self, max_workers, event_reactor):
+        ThreadPoolExecutor.__init__(self, max_workers)
+        EventReactorMixin.__init__(self, event_reactor)
+        event_reactor.register_handler(EventReactor.STOP_ID, self._stop_cb)
+        self._task_map = WeakValueDictionary()
+
+    def _stop_cb(self, event_id):
+        _logger.debug('WrappedThreadPoolExecutor stopping everything')
+
+        for key in self._task_map.keys():
+            self._task_map[key].stop()
+
+        self.shutdown(wait=False)
+
+    def submit(self, fn, *args, **kwargs):
+        if isinstance(fn, Task):
+            self._task_map[id(fn)] = fn
+
+        return ThreadPoolExecutor.submit(self, fn, *args, **kwargs)
 
 
 def asynchronous(daemon=True, name=None):

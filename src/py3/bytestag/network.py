@@ -3,14 +3,13 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestag.events import (EventReactorMixin, EventReactor, EventScheduler,
-    Task, EventID)
+    Task, EventID, WrappedThreadPoolExecutor)
 from bytestag.keys import bytes_to_b64
 from socketserver import BaseRequestHandler
 from threading import Thread
 import base64
 import binascii
 import collections
-import concurrent.futures
 import io
 import json
 import logging
@@ -185,10 +184,11 @@ class Network(EventReactorMixin):
         self._client = UDPClient(socket_obj=self._server.socket)
         self._reply_table = ReplyTable()
         self._incoming_transfers = {}
-        self._pool_executor = concurrent.futures.ThreadPoolExecutor(
-            Network.DEFAULT_POOL_SIZE)
+        self._pool_executor = WrappedThreadPoolExecutor(
+            Network.DEFAULT_POOL_SIZE, event_reactor)
         self._event_scheduler = EventScheduler(event_reactor)
         self._transfer_timer_id = EventID(self, 'Clean transfers')
+        self._running = True
 
         self._register_handlers()
         self._server.start()
@@ -210,7 +210,19 @@ class Network(EventReactorMixin):
             self._clean_transfer)
 
     def _stop_callback(self, event_id):
-        pass
+        '''Stop and expire everything'''
+
+        self._running = False
+
+        for transfer_id in list(self._incoming_transfers.keys()):
+            del self._incoming_transfers[transfer_id]
+            task = self._incoming_transfers[transfer_id][2]
+            task.stop()
+            task.event.set()
+
+        for key in list(self._reply_table.out_table.keys()):
+            event = self._reply_table.out_table[key]
+            event.set()
 
     def _clean_transfer(self, event_id, transfer_id):
         '''Remove timed out file transfer'''
@@ -228,6 +240,9 @@ class Network(EventReactorMixin):
 
     def _udp_incoming_callback(self, event_id, address, data):
         '''udp incoming'''
+
+        if not self._running:
+            return
 
         _logger.debug('UDP %s←%s %s', self.server_address, address,
             data[:160])
@@ -595,9 +610,16 @@ class SendTask(Task):
     The result returned is either `None` or :class:`DataPacket`.
     '''
 
+    def __init__(self, *args, **kwargs):
+        Task.__init__(self, *args, **kwargs)
+        self.event = args[4]
+
     def run(self, send_fn, sequence_id, address, reply_table, event, timeout,
     num_attempts=2):
         for i in range(num_attempts):
+            if not self.is_running:
+                break
+
             _logger.debug('SendTask →%s attempt=%d', address, i)
             send_fn()
             event.wait(timeout / num_attempts)

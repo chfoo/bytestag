@@ -11,7 +11,6 @@ from bytestagui.gtk.controllers.transfers import TransfersTabController
 from gi.repository import Gtk, Gdk, GLib # @UnresolvedImport
 import bytestagui.abstract.controllers.app
 import signal
-import sys
 
 
 class Application(bytestagui.abstract.controllers.app.Application):
@@ -27,8 +26,7 @@ class Application(bytestagui.abstract.controllers.app.Application):
         self.singletons[BuilderController].connect_signals()
 
     def run(self):
-        # GNOME bug #622084:
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        signal.signal(signal.SIGINT, self.stop)
 
         GLib.threads_init()
         Gdk.threads_init()
@@ -36,8 +34,6 @@ class Application(bytestagui.abstract.controllers.app.Application):
         Gtk.main()
         Gdk.threads_leave()
 
-    def stop(self):
+    def stop(self, *args):
+        self.singletons[DHTClientController].stop()
         Gtk.main_quit()
-
-        # FIXME: properly terminate threads
-        sys.exit(0)

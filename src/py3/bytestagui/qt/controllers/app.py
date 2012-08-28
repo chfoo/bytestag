@@ -27,11 +27,10 @@ class Application(bytestagui.abstract.controllers.app.Application):
         self.new_singleton(TransfersTabController)
 
     def run(self):
-        # FIXME: can't control+c
-        signal.signal(signal.SIGINT,
-            lambda *dummy: invoke_in_main_thread(self.stop))
+        signal.signal(signal.SIGINT, self.stop)
 
         sys.exit(self.app.exec_())
 
-    def stop(self):
-        self.app.quit()
+    def stop(self, *args):
+        self.singletons[DHTClientController].stop()
+        invoke_in_main_thread(self.app.quit)

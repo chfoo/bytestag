@@ -1,5 +1,5 @@
 
-from bytestag.keys import KeyBytes, bytes_to_b16
+from bytestag.keys import KeyBytes
 from bytestag.storage import (MemoryKVPTable, DatabaseKVPTable,
     SharedFilesKVPTable)
 from bytestag.tables import KVPID
@@ -9,6 +9,7 @@ import logging
 import os.path
 import random
 import tempfile
+import time
 import unittest
 
 
@@ -133,6 +134,9 @@ class TestSharedFilesKVPTable(unittest.TestCase, TableMixin):
 
         data2 = os.urandom(4) + b'\x00' * 1000
         data3 = os.urandom(4) + b'\x00' * 1000
+
+        # XXX: Delay for integer filesystem timestamps
+        time.sleep(1)
 
         os.remove(os.path.join(shared_dir.name, 'a.txt'))
 
