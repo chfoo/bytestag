@@ -22,7 +22,6 @@ install-doc: build-doc
 
 clean-doc:
 	make -C doc/ clean
-	rm -rvf doc/apiautogen/
 
 build-py:
 	./setup.py build

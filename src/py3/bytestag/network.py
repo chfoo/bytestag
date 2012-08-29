@@ -215,10 +215,12 @@ class Network(EventReactorMixin):
         self._running = False
 
         for transfer_id in list(self._incoming_transfers.keys()):
-            del self._incoming_transfers[transfer_id]
             task = self._incoming_transfers[transfer_id][2]
+            del self._incoming_transfers[transfer_id]
             task.stop()
-            task.event.set()
+
+            if hasattr(task, 'event'):
+                task.event.set()
 
         for key in list(self._reply_table.out_table.keys()):
             event = self._reply_table.out_table[key]
