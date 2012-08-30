@@ -22,8 +22,8 @@ class MainWindowController(BaseController):
         main_window.show()
 
     def _about_action_activated_cb(self, *args):
-        QtGui.QMessageBox.about(self._main_window, 'About Bytestag UI',
-            '<p><big><b>Bytestag UI</b></big></p>'
+        QtGui.QMessageBox.about(self._main_window, 'About Bytestag Client UI',
+            '<p><big><b>Bytestag Client UI</b></big></p>'
             '<p>{version_number}</p>'
             '<p><small>Copyright © 2012 Christopher Foo</small></p>'
             ''.format(version_number=bytestagui.__version__))

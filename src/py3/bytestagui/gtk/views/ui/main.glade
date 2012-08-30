@@ -5,7 +5,7 @@
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
-    <property name="program_name">Bytestag UI</property>
+    <property name="program_name">Bytestag Client UI</property>
     <property name="copyright" translatable="yes">Copyright © 2012 Christopher Foo</property>
     <property name="authors">Christopher Foo &lt;chris.foo@gmail.com&gt;</property>
     <property name="license_type">gpl-3-0</property>
@@ -305,7 +305,7 @@
               <object class="GtkLabel" id="notebook_shared_files_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Shared</property>
+                <property name="label" translatable="yes">_Shared Folders</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>

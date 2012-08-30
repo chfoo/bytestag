@@ -22,7 +22,7 @@
       </property>
       <widget class="QWidget" name="shared_files_tab">
        <attribute name="title">
-        <string>&amp;Shared</string>
+        <string>&amp;Shared Folders</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="0" colspan="2">
