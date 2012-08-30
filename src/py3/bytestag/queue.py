@@ -75,7 +75,8 @@ class BigDiskQueue(object):
 
         item = self._queue.get(block, timeout)
 
-        self._event.set()
+        if self._tables_created:
+            self._event.set()
 
         return item
 
