@@ -8,7 +8,7 @@ from bytestag.dht.tables import Bucket, RoutingTable, Node, BucketFullError
 from bytestag.events import (EventReactorMixin, EventScheduler, EventID,
     asynchronous, Task, Observer, FnTaskSlot, WrappedThreadPoolExecutor)
 from bytestag.keys import KeyBytes, compute_bucket_number, random_bucket_key
-from bytestag.network import Network, ReadTransferTask
+from bytestag.network import Network, DownloadTask
 from bytestag.tables import KVPID
 import collections
 import io
@@ -420,7 +420,7 @@ class DHTNetwork(EventReactorMixin):
     def get_value_from_node(self, node, key, index=None, offset=None):
         '''Download, from a node, data value associated to the key
 
-        :rtype: :class:`.ReadTransferTask`
+        :rtype: :class:`.DownloadTask`
         '''
 
         transfer_id = self._network.new_sequence_id()
@@ -515,13 +515,14 @@ class DHTNetwork(EventReactorMixin):
         if self._kvp_table.is_acceptable(kvpid, size, timestamp):
             transfer_id = self._network.new_sequence_id()
 
-            read_transfer_task = self._download_slot.add(
+            download_task = self._download_slot.add(
                 self._network.expect_incoming_transfer, transfer_id,
-                read_transfer_task_class=ReadStoreFromNodeTask)
+                max_size=DHTNetwork.MAX_VALUE_SIZE,
+                download_task_class=ReadStoreFromNodeTask)
 
-            read_transfer_task.key = kvpid.key
-            read_transfer_task.index = kvpid.index
-            read_transfer_task.total_size = size
+            download_task.key = kvpid.key
+            download_task.index = kvpid.index
+            download_task.total_size = size
             d[JSONKeys.TRANSFER_ID] = transfer_id
 
             self._network.send_answer_reply(data_packet, d)
@@ -529,7 +530,7 @@ class DHTNetwork(EventReactorMixin):
             _logger.debug('Store value %s←%s begin read', self.address,
                 data_packet.address)
 
-            file = read_transfer_task.result()
+            file = download_task.result()
 
             _logger.debug('Store value %s←%s received data', self.address,
                 data_packet.address)
@@ -1132,12 +1133,12 @@ class GetValueTask(Task):
         _logger.debug('Download round')
 
         for node in self._useful_node_list:
-            read_transfer_task = self._controller.get_value_from_node(node,
+            download_task = self._controller.get_value_from_node(node,
                 self._key, self._index, offset=self._file.tell())
 
-            self.hook_task(read_transfer_task)
+            self.hook_task(download_task)
 
-            transfered_file = read_transfer_task.result()
+            transfered_file = download_task.result()
             data = transfered_file.read()
 
             self._file.write(data)
@@ -1160,9 +1161,9 @@ class GetValueTask(Task):
                     self._file.value(), self._kvp_exchange_info.timestamp)
 
 
-class ReadStoreFromNodeTask(ReadTransferTask):
-    def __init__(self, address):
-        ReadTransferTask.__init__(self, address)
+class ReadStoreFromNodeTask(DownloadTask):
+    def __init__(self, *args, **kwargs):
+        DownloadTask.__init__(self, *args, **kwargs)
         self.key = None
         self.index = None
         self.total_size = None
