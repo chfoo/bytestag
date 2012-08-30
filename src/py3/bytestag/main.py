@@ -42,7 +42,10 @@ def main():
         help='Python logging filename')
     arg_parser.add_argument('--initial-scan', default=False,
         action='store_true',
-        help='Python logging filename')
+        help='Scan shared directories on startup')
+    arg_parser.add_argument('--port-forwarding', default=False,
+        action='store_true',
+        help='Enable UPnP IGD port forwarding')
 
     args = arg_parser.parse_args()
 
@@ -64,7 +67,9 @@ def main():
 
     client = Client(args.cache_dir, known_node_address=known_node_address,
         address=(args.host, args.port), node_id=KeyBytes(args.node_id or True),
-        initial_scan=args.initial_scan)
+        initial_scan=args.initial_scan,
+        use_port_forwarding=args.port_forwarding
+    )
 
     client.cache_table.max_size = args.cache_size
 

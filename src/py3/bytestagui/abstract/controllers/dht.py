@@ -8,7 +8,7 @@ from bytestag.events import Observer
 from bytestag.keys import KeyBytes
 from bytestagui.abstract.controllers.base import BaseController
 from bytestagui.abstract.controllers.config import ConfigController
-import abc
+import abc  # @UnusedImport
 import os
 import threading
 
@@ -29,6 +29,8 @@ class DHTClientController(BaseController, metaclass=abc.ABCMeta):
         host = config_parser['network']['host']
         port = int(config_parser['network']['port'])
         node_id = KeyBytes(config_parser['network']['node_id'])
+        use_port_forwarding = config_parser['network'].getboolean(
+            'enable_port_forwarding')
 
         known_node_host = config_parser['known_nodes']['host1']
         known_node_port = int(config_parser['known_nodes']['port1'])
@@ -36,7 +38,8 @@ class DHTClientController(BaseController, metaclass=abc.ABCMeta):
 
         os.makedirs(basedir.cache_dir, mode=0o777, exist_ok=True)
 
-        self._client = Client(basedir.cache_dir, (host, port), node_id)
+        self._client = Client(basedir.cache_dir, (host, port), node_id,
+            use_port_forwarding=use_port_forwarding)
         self._client.start()
 
         thread = threading.Timer(2, self.connect)

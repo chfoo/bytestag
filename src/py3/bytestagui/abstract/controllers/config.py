@@ -20,6 +20,7 @@ class ConfigController(BaseController):
                 ('host', '0.0.0.0'),
                 ('port', 0),
                 ('node_id', KeyBytes().base64),
+                ('enable_port_forwarding', True),
             ])),
             ('known_nodes', OrderedDict([
                 ('host1', 'torwuf.com'),

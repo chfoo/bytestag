@@ -9,9 +9,22 @@ from bytestag.keys import KeyBytes
 from bytestag.network import Network
 from bytestag.storage import DatabaseKVPTable, SharedFilesKVPTable
 from bytestag.tables import AggregatedKVPTable
+import atexit
 import logging
 import os.path
 import threading
+import warnings
+
+try:
+    import miniupnpc
+except ImportError as e:
+    try:
+        import miniupnpc_bytestag as miniupnpc
+    except ImportError:
+        warnings.warn(e)
+
+        miniupnpc = None
+
 
 __docformat__ = 'restructuredtext en'
 _logger = logging.getLogger(__name__)
@@ -24,7 +37,7 @@ class Client(threading.Thread):
     '''
 
     def __init__(self, cache_dir, address=('0.0.0.0', 0), node_id=None,
-    known_node_address=None, initial_scan=False):
+    known_node_address=None, initial_scan=False, use_port_forwarding=False):
         threading.Thread.__init__(self)
         self.daemon = True
         self.name = '{}.{}'.format(__name__, Client.__name__)
@@ -41,6 +54,15 @@ class Client(threading.Thread):
         self._upload_slot = FnTaskSlot()
         self._download_slot = FnTaskSlot()
         self._initial_scan = initial_scan
+        self._upnp_client = None
+        
+        if use_port_forwarding:
+            if not miniupnpc:
+                warnings.warn(
+                    'miniupnpc not found. Port forwarding is unavailable!')
+            else:
+                self._init_port_forwarding()
+                self._hook_port_forwarding_cleanup()
 
         self._init()
 
@@ -78,6 +100,32 @@ class Client(threading.Thread):
     def network(self):
         return self._network
 
+    def _init_port_forwarding(self):
+        upnp_client = miniupnpc.UPnP()
+        self._upnp_client = upnp_client
+        upnp_client.discoverdelay = 200
+
+        num_devices = upnp_client.discover()
+
+        _logger.debug('UPnP IGD count=%s', num_devices)
+
+        if not num_devices:
+            return
+
+        upnp_client.selectigd()
+
+        port = self._network.server_address[1]
+
+        result = upnp_client.addportmapping(port, 'UDP', upnp_client.lanaddr,
+            port, 'Bytestag', '')
+
+        if result:
+            _logger.info('UPnP port forwarded %s:%s', upnp_client.lanaddr,
+                port)
+        else:
+            _logger.warning('UPnP port forward failed %s:%s',
+                upnp_client.lanaddr, port)
+
     def _init(self):
         self._dht_network = DHTNetwork(self._event_reactor,
             self._aggregated_kvp_table, self._node_id, self._network,
@@ -86,6 +134,9 @@ class Client(threading.Thread):
             self._aggregated_kvp_table, self._upload_slot)
         self._replicator = Replicator(self._event_reactor, self._dht_network,
             self._aggregated_kvp_table, self._upload_slot)
+
+    def _hook_port_forwarding_cleanup(self):
+        atexit.register(self._cleanup_port_forwarding)
 
     def run(self):
         if self._known_node_address:
@@ -100,3 +151,15 @@ class Client(threading.Thread):
 
     def stop(self):
         self._event_reactor.put(EventReactor.STOP_ID)
+
+        if self._upnp_client:
+            self._cleanup_port_forwarding()
+
+    def _cleanup_port_forwarding(self, *args):
+        if self._upnp_client:
+            upnp_client = self._upnp_client
+
+            self._upnp_client = None
+
+            upnp_client.deleteportmapping(self._network.server_address[1],
+                'UDP')
