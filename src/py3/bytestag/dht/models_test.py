@@ -1,4 +1,5 @@
-from bytestag.dht.models import NodeList, KVPExchangeInfoList, KVPExchangeInfo
+from bytestag.dht.models import (NodeList, KVPExchangeInfoList, KVPExchangeInfo,
+    FileInfo, CollectionInfo)
 from bytestag.dht.tables import Node
 from bytestag.keys import KeyBytes
 import unittest
@@ -34,3 +35,73 @@ class TestKVPExchangeInfo(unittest.TestCase):
 
         self.assertEqual(kvp_info,
             KVPExchangeInfo.from_json_loadable(kvp_info.to_json_dumpable()))
+
+
+class TestFileInfo(unittest.TestCase):
+    def test_read_json(self):
+        '''It should read in a json with basic info'''
+
+        s = (b'{'
+            b'"!":"BytestagFileInfo",'
+            b'"hash":"jbip9t8iC9lEz3jndkm5I2fTWV0=",'
+            b'"parts":["jbip9t8iC9lEz3jndkm5I2fTWV0="]'
+        b'}')
+
+        info = FileInfo.from_bytes(s)
+
+        self.assertEqual(info.file_hash,
+            KeyBytes('jbip9t8iC9lEz3jndkm5I2fTWV0='))
+        self.assertEqual(info.part_hashes,
+            [KeyBytes('jbip9t8iC9lEz3jndkm5I2fTWV0=')])
+
+        result_bytes = info.to_bytes()
+
+        self.assertEqual(s, result_bytes)
+
+    def test_read_json_extended(self):
+        '''It should read in a json with extended info'''
+
+        s = (b'{'
+            b'"!":"BytestagFileInfo",'
+            b'"filename":["my_file.txt"],'
+            b'"hash":"jbip9t8iC9lEz3jndkm5I2fTWV0=",'
+            b'"parts":["jbip9t8iC9lEz3jndkm5I2fTWV0="],'
+            b'"size":123'
+        b'}')
+
+        info = FileInfo.from_bytes(s)
+
+        self.assertEqual(info.file_hash,
+            KeyBytes('jbip9t8iC9lEz3jndkm5I2fTWV0='))
+        self.assertEqual(info.part_hashes,
+            [KeyBytes('jbip9t8iC9lEz3jndkm5I2fTWV0=')])
+        self.assertEqual(info.size, 123)
+        self.assertEqual(info.filename, ['my_file.txt'])
+
+        result_bytes = info.to_bytes()
+
+        self.assertEqual(s, result_bytes)
+
+
+class TestCollectionInfo(unittest.TestCase):
+    def test_read_json(self):
+        '''It should read in json with basic info'''
+
+        s = (b'{'
+            b'"!":"BytestagCollectionInfo",'
+            b'"files":['
+                b'{'
+                b'"!":"BytestagFileInfo",'
+                b'"hash":"jbip9t8iC9lEz3jndkm5I2fTWV0=",'
+                b'"parts":["jbip9t8iC9lEz3jndkm5I2fTWV0="]'
+                b'}'
+            b']'
+        b'}')
+
+        info = CollectionInfo.from_bytes(s)
+
+        self.assertIsInstance(info.file_infos[0], FileInfo)
+
+        result_bytes = info.to_bytes()
+
+        self.assertEqual(s, result_bytes)

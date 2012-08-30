@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestag.dht.models import FileHashInfo
+from bytestag.dht.models import FileInfo
 from bytestag.events import Task
 from bytestag.keys import KeyBytes
 from bytestag.tables import KVPTable, KVPRecord, KVPID
@@ -524,7 +524,7 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
             return f.read(part_size)
 
     def file_hash_info(self, kvpid):
-        return FileHashInfo.from_bytes(self._get_file_hash_info(kvpid))
+        return FileInfo.from_bytes(self._get_file_hash_info(kvpid))
 
     def _get_file_hash_info(self, kvpid):
         with self.connection() as con:
@@ -815,7 +815,7 @@ class SharedFilesHashTask(Task):
                 hashes.append(part_hasher.digest())
 
         file_hash = whole_file_hasher.digest()
-        file_hash_info = FileHashInfo(file_hash, hashes)
+        file_hash_info = FileInfo(file_hash, hashes)
         index = hashlib.sha1(file_hash_info.to_bytes()).digest()
 
         with self._table.connection() as con:
