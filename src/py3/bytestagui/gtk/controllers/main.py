@@ -2,20 +2,20 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.base import BaseController
-from bytestagui.gtk.controllers.builder import BuilderController
+from bytestagui.base.controllers.app import BaseController
 from gi.repository import Gtk # @UnresolvedImport
 import bytestagui
+from bytestagui.gtk.controllers.inflater import InflaterController
 
 
 class MainWindowController(BaseController):
     def __init__(self, application):
         BaseController.__init__(self, application)
 
-        builder = self.application.singletons[BuilderController].builder
+        builder = self.application.singletons[InflaterController].main_builder
         self._builder = builder
 
-        self.application.singletons[BuilderController].add_signals({
+        builder.connect_signals({
             'main_window_delete_event_cb': self._main_window_delete_event_cb,
             'main_window_destroy_cb': self._main_window_destroy_cb,
             'quit_menu_item_activate_cb': self._quit_menu_item_activate_cb,

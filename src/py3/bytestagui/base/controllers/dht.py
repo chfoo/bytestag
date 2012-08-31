@@ -6,24 +6,20 @@ from bytestag import basedir
 from bytestag.client import Client
 from bytestag.events import Observer
 from bytestag.keys import KeyBytes
-from bytestagui.abstract.controllers.base import BaseController
-from bytestagui.abstract.controllers.config import ConfigController
-import abc
+from bytestagui.base.controllers.app import BaseController
+import abc # @UnusedImport
 import os
 import threading
 
 
-class DHTClientController(BaseController, metaclass=abc.ABCMeta):
+class BaseDHTClientController(BaseController, metaclass=abc.ABCMeta):
     DISCONNECTED, CONNECTING, CONNECTED = range(3)
-    CONNECTING_MSG = 'Connecting to network…'
-    CONNECTED_MSG = 'Connected to network.'
-    DISCONNECTED_MSG = 'Disconnected from network.'
 
     def __init__(self, application):
         BaseController.__init__(self, application)
         self._observer = Observer()
 
-        config = self.application.singletons[ConfigController]
+        config = self.application.singletons['ConfigController']
 
         host = config.get('network', 'host')
         port = int(config.get('network', 'port'))
@@ -51,16 +47,16 @@ class DHTClientController(BaseController, metaclass=abc.ABCMeta):
         return self._observer
 
     def connect(self):
-        self.observer(DHTClientController.CONNECTING)
+        self.observer(BaseDHTClientController.CONNECTING)
 
         join_network_task = self._client.dht_network.join_network(
             self._known_node_address)
 
         def cb(result):
             if result:
-                self.observer(DHTClientController.CONNECTED)
+                self.observer(BaseDHTClientController.CONNECTED)
             else:
-                self.observer(DHTClientController.DISCONNECTED)
+                self.observer(BaseDHTClientController.DISCONNECTED)
 
         join_network_task.observer.register(cb)
 

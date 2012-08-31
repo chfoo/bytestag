@@ -2,6 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
+import abc
 import collections
 
 __docformat__ = 'restructuredtext en'
@@ -41,7 +42,7 @@ class ControllerSingletons(collections.MutableMapping):
         return len(self._class_map)
 
 
-class BaseApplication(object):
+class BaseApplication(metaclass=abc.ABCMeta):
     '''Base application.'''
 
     def __init__(self):
@@ -58,6 +59,14 @@ class BaseApplication(object):
         self._singletons[class_] = instance
 
         return instance
+
+    @abc.abstractmethod
+    def run(self):
+        pass
+
+    @abc.abstractmethod
+    def stop(self):
+        pass
 
 
 class BaseController(object):

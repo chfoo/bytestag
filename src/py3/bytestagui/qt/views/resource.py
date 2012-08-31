@@ -3,13 +3,13 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 import bytestag.lib.pkg_resources
-import bytestagui.abstract.views.resource
+from bytestagui.base.views.resource import Resource as BaseResource
 import bytestagui.qt.views
 import os.path
 import sys
 
 
-class Resource(bytestagui.abstract.views.resource.Resource):
+class Resource(BaseResource):
     @classmethod
     def get_bytes(cls, name):
         try:

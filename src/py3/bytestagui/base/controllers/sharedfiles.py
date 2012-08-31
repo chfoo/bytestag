@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.base import BaseController
+from bytestagui.base.controllers.app import BaseController
 
 
 class SharedFilesController(BaseController):
@@ -36,4 +36,3 @@ class SharedFilesController(BaseController):
             config_parser['shared_files']['path{}'.format(i)] = directory
 
         self.application.singletons['ConfigController'].save()
-

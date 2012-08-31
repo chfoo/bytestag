@@ -4,9 +4,9 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestag.dht.network import (StoreValueTask, StoreToNodeTask,
     ReadStoreFromNodeTask)
-from bytestagui.abstract.controllers.base import BaseController
-from bytestagui.gtk.controllers.dht import DHTClientController
+from bytestagui.base.controllers.app import BaseController
 from bytestagui.gtk.controllers.builder import BuilderController
+from bytestagui.gtk.controllers.dht import DHTClientController
 from gi.repository import Gtk, GLib # @UnresolvedImport
 
 

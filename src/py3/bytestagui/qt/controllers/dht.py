@@ -3,9 +3,9 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtCore # @UnresolvedImport
-from bytestagui.abstract.controllers.dht import (
+from bytestagui.base.controllers.dht import (
     DHTClientController as BaseDHTClientController)
-from bytestagui.abstract.views.dht import (CONNECTING_MSG, CONNECTED_MSG, 
+from bytestagui.base.views.dht import (CONNECTING_MSG, CONNECTED_MSG, 
     DISCONNECTED_MSG)
 from bytestagui.qt.controllers.invoker import invoke_in_main_thread
 from bytestagui.qt.controllers.loader import LoaderController

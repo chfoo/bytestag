@@ -2,18 +2,17 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.dht import (
-    DHTClientController as BaseDHTClientController)
-from bytestagui.abstract.views.dht import (CONNECTING_MSG, CONNECTED_MSG,
+from bytestagui.base.controllers.dht import BaseDHTClientController
+from bytestagui.base.views.dht import (CONNECTING_MSG, CONNECTED_MSG,
     DISCONNECTED_MSG)
-from bytestagui.gtk.controllers.builder import BuilderController
+from bytestagui.gtk.controllers.inflater import InflaterController
 from gi.repository import GLib # @UnresolvedImport
 
 
 class DHTClientController(BaseDHTClientController):
     def __init__(self, application):
         BaseDHTClientController.__init__(self, application)
-        builder = self.application.singletons[BuilderController].builder
+        builder = self.application.singletons[InflaterController].main_builder
         self._statusbar = builder.get_object('main_statusbar')
         self._context_id = self._statusbar.get_context_id('DHT Network')
 

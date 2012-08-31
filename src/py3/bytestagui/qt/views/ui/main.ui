@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="shared_files_tab">
        <attribute name="title">
@@ -130,17 +130,51 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="downlaods_tab">
+      <widget class="QWidget" name="downloads_tab">
        <attribute name="title">
         <string>&amp;Downloads</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+         <widget class="QTableView" name="downloads_table_view"/>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QPushButton" name="downloads_open_link_button">
+            <property name="text">
+             <string>Open &amp;Link</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="downloads_remove_button">
+            <property name="text">
+             <string>&amp;Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="downloads_clear_button">
+            <property name="text">
+             <string>&amp;Clear</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -171,6 +205,8 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionOpen_Link"/>
+    <addaction name="separator"/>
     <addaction name="quit_action"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -202,6 +238,11 @@
   <action name="quit_action">
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionOpen_Link">
+   <property name="text">
+    <string>Open &amp;Link</string>
    </property>
   </action>
  </widget>

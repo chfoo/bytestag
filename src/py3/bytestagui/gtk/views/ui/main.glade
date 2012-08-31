@@ -7,20 +7,20 @@
     <property name="type_hint">dialog</property>
     <property name="program_name">Bytestag Client UI</property>
     <property name="copyright" translatable="yes">Copyright © 2012 Christopher Foo</property>
+    <property name="license" translatable="yes">This program comes with ABSOLUTELY NO WARRANTY;
+for details, visit &lt;a href="http://www.gnu.org/licenses/gpl.html"&gt;http://www.gnu.org/licenses/gpl.html&lt;/a&gt;</property>
     <property name="authors">Christopher Foo &lt;chris.foo@gmail.com&gt;</property>
+    <property name="wrap_license">True</property>
     <property name="license_type">gpl-3-0</property>
     <signal name="close" handler="about_dialog_close_cb" swapped="no"/>
     <signal name="delete-event" handler="about_dialog_delete_event_cb" swapped="no"/>
     <signal name="response" handler="about_dialog_response_cb" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="aboutdialog-vbox1">
+      <object class="GtkBox" id="aboutdialog-vbox">
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="aboutdialog-action_area1">
+          <object class="GtkButtonBox" id="aboutdialog-action_area">
             <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -28,9 +28,6 @@
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
@@ -61,6 +58,16 @@
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="open_link_menu_item">
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Open _Link</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="open_link_menu_item_activate_cb" swapped="no"/>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
                         <property name="use_action_appearance">False</property>
@@ -313,10 +320,91 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkBox" id="box4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">label</property>
+                <child>
+                  <object class="GtkTreeView" id="downloads_tree_view">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treeview-selection3"/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButtonBox" id="buttonbox2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="layout_style">start</property>
+                    <child>
+                      <object class="GtkButton" id="downloads_open_link">
+                        <property name="label" translatable="yes">Open _Link</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_underline">True</property>
+                        <signal name="clicked" handler="downloads_open_link_clicked_cb\" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="downloads_remove_button">
+                        <property name="label">gtk-remove</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_stock">True</property>
+                        <property name="image_position">top</property>
+                        <signal name="clicked" handler="downloads_remove_button_clicked_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="downloads_clear_button">
+                        <property name="label">gtk-clear</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <property name="image_position">top</property>
+                        <signal name="clicked" handler="downloads_clear_button_clicked_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                        <property name="secondary">True</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="position">1</property>

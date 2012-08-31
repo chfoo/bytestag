@@ -3,9 +3,9 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtGui, QtCore # @UnresolvedImport
-from bytestagui.abstract.controllers.sharedfiles import (
+from bytestagui.base.controllers.sharedfiles import (
     SharedFilesController as BaseSharedFilesController)
-from bytestagui.abstract.views.sharedfiles import (DIRECTORY_HEADER_TEXT, 
+from bytestagui.base.views.sharedfiles import (DIRECTORY_HEADER_TEXT,
     SCAN_PROGRESS_TEXT)
 from bytestagui.qt.controllers.dht import DHTClientController
 from bytestagui.qt.controllers.invoker import invoke_in_main_thread

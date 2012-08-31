@@ -2,8 +2,8 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestagui.abstract.controllers.base import BaseController
-from bytestagui.abstract.views.transfers import (ADDRESS_TEXT, KEY_TEXT,
+from bytestagui.base.controllers.app import BaseController
+from bytestagui.base.views.transfers import (ADDRESS_TEXT, KEY_TEXT,
     PROGRESS_TEXT)
 from bytestagui.qt.controllers.dht import DHTClientController
 from bytestagui.qt.controllers.loader import LoaderController
