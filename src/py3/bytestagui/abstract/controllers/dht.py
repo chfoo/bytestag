@@ -23,15 +23,14 @@ class DHTClientController(BaseController, metaclass=abc.ABCMeta):
         BaseController.__init__(self, application)
         self._observer = Observer()
 
-        config_parser = self.application.singletons[
-            ConfigController].config_parser
+        config = self.application.singletons[ConfigController]
 
-        host = config_parser['network']['host']
-        port = int(config_parser['network']['port'])
-        node_id = KeyBytes(config_parser['network']['node_id'])
+        host = config.get('network', 'host')
+        port = int(config.get('network', 'port'))
+        node_id = KeyBytes(config.get('network', 'node_id'))
 
-        known_node_host = config_parser['known_nodes']['host1']
-        known_node_port = int(config_parser['known_nodes']['port1'])
+        known_node_host = config.get('known_nodes', 'host1')
+        known_node_port = int(config.get('known_nodes', 'port1'))
         self._known_node_address = (known_node_host, known_node_port)
 
         os.makedirs(basedir.cache_dir, mode=0o777, exist_ok=True)
