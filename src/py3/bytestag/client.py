@@ -2,6 +2,8 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
+from bytestag import basedir
+from bytestag.dht.downloading import Downloader
 from bytestag.dht.network import DHTNetwork
 from bytestag.dht.publishing import Publisher, Replicator
 from bytestag.events import EventReactor, FnTaskSlot
@@ -24,7 +26,7 @@ class Client(threading.Thread):
     '''
 
     def __init__(self, cache_dir, address=('0.0.0.0', 0), node_id=None,
-    known_node_address=None, initial_scan=False):
+    known_node_address=None, initial_scan=False, config_dir=None):
         threading.Thread.__init__(self)
         self.daemon = True
         self.name = '{}.{}'.format(__name__, Client.__name__)
@@ -41,6 +43,7 @@ class Client(threading.Thread):
         self._upload_slot = FnTaskSlot()
         self._download_slot = FnTaskSlot()
         self._initial_scan = initial_scan
+        self._config_dir = config_dir or basedir.config_dir
 
         self._init()
 
@@ -86,6 +89,8 @@ class Client(threading.Thread):
             self._aggregated_kvp_table, self._upload_slot)
         self._replicator = Replicator(self._event_reactor, self._dht_network,
             self._aggregated_kvp_table, self._upload_slot)
+        self._downloader = Downloader(self._event_reactor, self._config_dir,
+            self._dht_network, self._download_slot)
 
     def run(self):
         if self._known_node_address:
