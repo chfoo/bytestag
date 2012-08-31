@@ -8,7 +8,7 @@ import logging
 import os.path
 
 
-def main(default_gui='gtk'):
+def main(default_gui='qt'):
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--log-level', help='Python log level')
     arg_parser.add_argument('--enable-disk-log', action='store_true',
