@@ -4,7 +4,7 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtGui, QtCore # @UnresolvedImport
 from bytestagui.base.controllers.app import BaseController
-from bytestagui.qt.controllers.loader import LoaderController
+from bytestagui.qt.controllers.inflater import InflaterController
 import bytestagui
 
 
@@ -12,7 +12,7 @@ class MainWindowController(BaseController):
     def __init__(self, application):
         BaseController.__init__(self, application)
 
-        main_window = self.application.singletons[LoaderController].main_window
+        main_window = self.application.singletons[InflaterController].main_window
         self._main_window = main_window
 
         main_window.about_action.activated.connect(

@@ -2,20 +2,20 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
+from PySide import QtCore # @UnresolvedImport
 from bytestagui.base.controllers.app import BaseController
 from bytestagui.base.views.transfers import (ADDRESS_TEXT, KEY_TEXT,
     PROGRESS_TEXT)
 from bytestagui.qt.controllers.dht import DHTClientController
-from bytestagui.qt.controllers.loader import LoaderController
+from bytestagui.qt.controllers.inflater import InflaterController
 from bytestagui.qt.models.transfers import TransfersTableModel
-from PySide import QtCore  # @UnresolvedImport
 
 
 class TransfersTabController(BaseController):
     def __init__(self, application):
         BaseController.__init__(self, application)
 
-        loader = self.application.singletons[LoaderController]
+        loader = self.application.singletons[InflaterController]
         self._main_window = loader.main_window
 
         self._create_table()

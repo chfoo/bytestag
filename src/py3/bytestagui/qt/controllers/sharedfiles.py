@@ -5,11 +5,11 @@
 from PySide import QtGui, QtCore # @UnresolvedImport
 from bytestagui.base.controllers.sharedfiles import (
     SharedFilesController as BaseSharedFilesController)
-from bytestagui.base.views.sharedfiles import (DIRECTORY_HEADER_TEXT,
+from bytestagui.base.views.sharedfiles import (DIRECTORY_HEADER_TEXT, 
     SCAN_PROGRESS_TEXT)
 from bytestagui.qt.controllers.dht import DHTClientController
+from bytestagui.qt.controllers.inflater import InflaterController
 from bytestagui.qt.controllers.invoker import invoke_in_main_thread
-from bytestagui.qt.controllers.loader import LoaderController
 from bytestagui.qt.models.sharedfiles import SharedFilesTableModel
 
 
@@ -18,7 +18,7 @@ class SharedFilesController(BaseSharedFilesController):
         BaseSharedFilesController.__init__(self, application)
 
         self._scan_task = None
-        loader = self.application.singletons[LoaderController]
+        loader = self.application.singletons[InflaterController]
         self._main_window = loader.main_window
 
         self._main_window.shared_files_remove_button.setEnabled(False)
