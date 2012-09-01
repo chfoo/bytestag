@@ -18,11 +18,11 @@ setup(name='Bytestag',
     url='https://launchpad.net/bytestag',
     packages=['bytestag', 'bytestag.dht', 'bytestag.lib', 
     ],
-    package_dir={'': src_dir},
+    package_dir={'': 'src/py3'},
     package_data={
     },
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 2 - Pre-Alpha',
         'Operating System :: OS Independent',
         'Topic :: Internet',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
