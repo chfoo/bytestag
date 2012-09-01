@@ -22,7 +22,7 @@ build_exe_options = {
             'bytestag.lib._pkg_resources',
         ],
         'include_files': [
-            ('src/py3/bytestagui/qt/views/ui/', 'bytestagui/qt/views/ui/'),
+            ('src/py3/bytestagui/views/qt/ui/', 'bytestagui/views/qt/ui/'),
         ],
         'icon': 'img/logo/bytestag_app.ico',
     },

@@ -22,7 +22,7 @@ class Resource(BaseResource):
     @classmethod
     def get_fallback_path(cls, name):
         appdir = os.path.dirname(sys.argv[0])
-        return os.path.join(appdir, 'bytestagui', 'qt', 'views',
+        return os.path.join(appdir, 'bytestagui', 'views', 'qt',
             *name.split('/'))
 
     @classmethod
