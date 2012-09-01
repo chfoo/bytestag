@@ -79,7 +79,7 @@ class SharedDirsTableController(BaseController):
 
 
 class SharedDirsScanController(BaseController):
-    '''Controls the scan buttons and progress label'''
+    '''Controls the scan buttons, progress label, and stats'''
 
     def __init__(self, application):
         BaseController.__init__(self, application)
@@ -101,6 +101,8 @@ class SharedDirsScanController(BaseController):
         timer.timeout.connect(self._update_scan_progress)
         timer.start(200)
 
+        self._update_stats()
+
     def _disable_scan_ui(self):
         if self._scan_task:
             assert self._scan_task.is_finished
@@ -113,6 +115,7 @@ class SharedDirsScanController(BaseController):
             item.widget().hide()
 
         self._main_window.shared_files_scan_button.setEnabled(True)
+        self._update_stats()
 
     def _enable_scan_ui(self):
         self._main_window.shared_files_scan_button.setEnabled(False)
@@ -149,3 +152,13 @@ class SharedDirsScanController(BaseController):
                 SCAN_PROGRESS_TEXT.format(
                 filename=filename, bytes_read=bytes_read)
             )
+
+    def _update_stats(self):
+        table = self.application.singletons[DHTClientController
+            ].client.shared_files_table
+
+        # TODO: l10n
+        self._main_window.files_count_label.setText(str(table.num_files))
+        self._main_window.info_files_count_label.setText(
+            str(table.num_collections))
+        self._main_window.total_size_label.setText(str(table.total_disk_size))

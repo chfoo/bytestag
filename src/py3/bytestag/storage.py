@@ -165,6 +165,7 @@ class SQLite3Mixin(object):
         con.row_factory = sqlite3.Row
         con.execute('PRAGMA synchronous=NORMAL')
         con.execute('PRAGMA journal_mode=WAL')
+        con.execute('PRAGMA foreign_keys = ON')
 
         self._num_connections += 1
         _logger.debug('Begin transaction current=%d', self._num_connections)
@@ -401,6 +402,13 @@ class ReadOnlyTableError(Exception):
     pass
 
 
+class CollectionInfoTypes(object):
+    '''Types of CollectionInfo file types'''
+
+    DUMMY, BYTESTAG, BITTORRENT = range(3)
+    BYTESTAG_COOKIE = b'{"!":"BytestagCollectionInfo"'
+
+
 class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
     '''Provides a KVPTable interface to shared files split into pieces.'''
 
@@ -432,6 +440,12 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
                 'file_id INTEGER NOT NULL,'
                 'file_offset INTEGER NOT NULL,'
                 'last_update INTEGER DEFAULT 0,'
+                'FOREIGN KEY (file_id) REFERENCES files (id)'
+                'ON DELETE CASCADE'
+                ')')
+            con.execute('CREATE TABLE IF NOT EXISTS collections ('
+                'file_id INTEGER PRIMARY KEY,'
+                'type INTEGER NOT NULL,'
                 'FOREIGN KEY (file_id) REFERENCES files (id)'
                 'ON DELETE CASCADE'
                 ')')
@@ -563,6 +577,27 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
         thread.start()
 
         return task
+
+    @property
+    def num_files(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT COUNT(1) FROM files')
+
+            return cur.fetchone()[0]
+
+    @property
+    def num_collections(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT COUNT(1) FROM collections')
+
+            return cur.fetchone()[0]
+
+    @property
+    def total_disk_size(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT SUM(size) FROM files')
+
+            return cur.fetchone()[0]
 
 
 class SharedFilesRecord(KVPRecord):
@@ -839,6 +874,34 @@ class SharedFilesHashTask(Task):
                     '(?, ?, ?)', (hash_bytes, row_id, offset))
                 except sqlite3.IntegrityError:
                     _logger.exception('Possible duplicate')
+
+            collection_type = self._get_collection_type(path)
+
+            if collection_type:
+                con.execute('INSERT INTO collections '
+                    '(file_id, type) VALUES '
+                    '(?, ?)', (row_id, collection_type))
+
+    def _get_collection_type(self, path):
+        cookie_len = len(CollectionInfoTypes.BYTESTAG_COOKIE)
+
+        with open(path, 'rb') as f:
+            data = f.read(cookie_len)
+
+            if data.startswith(CollectionInfoTypes.BYTESTAG_COOKIE):
+                return CollectionInfoTypes.BYTESTAG
+
+            if path.endswith('.torrent'):
+                f.seek(0)
+
+                if self._check_bittorrent_file_contents(f):
+                    return CollectionInfoTypes.BITTORRENT
+
+    def _check_bittorrent_file_contents(self, f):
+        data = f.read(1024)
+
+        if b'info' in data and b'pieces' in data:
+            return True
 
     def _clean_database(self):
         _logger.info('Cleaning database')

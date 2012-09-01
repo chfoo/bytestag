@@ -35,6 +35,7 @@ class BigDiskQueue(object):
         con.row_factory = sqlite3.Row
         con.execute('PRAGMA synchronous=OFF')
         con.execute('PRAGMA journal_mode=WAL')
+        # con.execute('PRAGMA foreign_keys = ON')
 
         with con:
             yield con
