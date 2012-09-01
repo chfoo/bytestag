@@ -1,3 +1,5 @@
+PREFIX ?= /usr/local
+
 build: build-doc build-py build-app build-daemon
 
 install: install-doc install-py install-app install-daemon
@@ -17,8 +19,8 @@ force-build-doc:
 	sphinx-apidoc src/py3/bytestag -o doc/api/ -f
 
 install-doc: build-doc
-	mkdir -pv $(DESTDIR)/usr/share/doc/pybytestag/
-	cp -rv doc/_build/html $(DESTDIR)/usr/share/doc/pybytestag/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/share/doc/pybytestag/
+	cp -rv doc/_build/html $(DESTDIR)/$(PREFIX)/share/doc/pybytestag/
 
 clean-doc:
 	make -C doc/ clean
@@ -27,7 +29,7 @@ build-py:
 	./setup.py build
 
 install-py: build-py
-	./setup.py install --prefix $(DESTDIR)/usr/
+	./setup.py install --prefix $(DESTDIR)/$(PREFIX)
 	
 clean-py:
 	./setup.py clean
@@ -56,19 +58,19 @@ build-app:
 	cp -rv img/logo/hicolor build/icons/
 	
 install-app: build-app
-	mkdir -pv $(DESTDIR)/usr/share/bytestag/
-	cp -rv build/share/bytestag/* $(DESTDIR)/usr/share/bytestag/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/share/bytestag/
+	cp -rv build/share/bytestag/* $(DESTDIR)/$(PREFIX)/share/bytestag/
 	
-	mkdir -pv $(DESTDIR)/usr/bin/
-	cp -v pkg/bin/bytestag $(DESTDIR)/usr/bin/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/bin/
+	cp -v pkg/bin/bytestag $(DESTDIR)/$(PREFIX)/bin/
 	
-	mkdir -pv $(DESTDIR)/usr/share/pixmaps/bytestag/
-	cp -rv build/pixmaps/* $(DESTDIR)/usr/share/pixmaps/bytestag/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/share/pixmaps/bytestag/
+	cp -rv build/pixmaps/* $(DESTDIR)/$(PREFIX)/share/pixmaps/bytestag/
 	
-	cp -rv build/icons $(DESTDIR)/usr/share/
+	cp -rv build/icons $(DESTDIR)/$(PREFIX)/share/
 	
-	mkdir -pv $(DESTDIR)/usr/share/applications/
-	cp -v pkg/bytestag.desktop $(DESTDIR)/usr/share/applications/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/share/applications/
+	cp -v pkg/bytestag.desktop $(DESTDIR)/$(PREFIX)/share/applications/
 
 clean-app:
 	rm -rvf build/
@@ -79,8 +81,8 @@ install-daemon: build-daemon
 	mkdir -pv $(DESTDIR)/etc/
 	cp -rv pkg/etc/bytestagd $(DESTDIR)/etc/
 	
-	mkdir -pv $(DESTDIR)/usr/sbin/
-	cp -v pkg/sbin/bytestagd $(DESTDIR)/usr/sbin/
+	mkdir -pv $(DESTDIR)/$(PREFIX)/sbin/
+	cp -v pkg/sbin/bytestagd $(DESTDIR)/$(PREFIX)/sbin/
 	cp -rv pkg/etc/bytestagd $(DESTDIR)/etc/
 
 clean-daemon:
