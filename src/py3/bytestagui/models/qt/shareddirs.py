@@ -5,16 +5,20 @@
 from PySide import QtCore  #@UnresolvedImport
 
 
-class SharedFilesTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, header_text, filenames):
+class SharedDirsTableModel(QtCore.QAbstractTableModel):
+    def __init__(self, header_text):
         QtCore.QAbstractTableModel.__init__(self)
-        self._filenames = filenames
+        self._filenames = []
         self._header_text = header_text
 
-    def rowCount(self, dummy):
+    @property
+    def filenames(self):
+        return self._filenames
+
+    def rowCount(self, parent_index=None):
         return len(self._filenames)
 
-    def columnCount(self, dummy):
+    def columnCount(self, parent_index=None):
         return 1
 
     def data(self, index, role=QtCore.Qt.DisplayRole):

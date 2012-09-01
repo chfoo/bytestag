@@ -3,8 +3,8 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 import bytestag.lib.pkg_resources
-from bytestagui.base.views.resource import Resource as BaseResource
-import bytestagui.qt.views
+from bytestagui.views.resource import Resource as BaseResource
+import bytestagui.views.qt
 import os.path
 import sys
 
@@ -14,7 +14,7 @@ class Resource(BaseResource):
     def get_bytes(cls, name):
         try:
             return bytestag.lib.pkg_resources.resource_string(
-                bytestagui.qt.views.__name__, name)
+                bytestagui.views.qt.__name__, name)
         except IOError:
             return Resource.get_bytes_fallback(name)
 

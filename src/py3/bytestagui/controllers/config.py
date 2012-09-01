@@ -6,7 +6,7 @@ from bytestag import basedir
 from bytestag.events import Observer
 from bytestag.files import file_overwriter
 from bytestag.keys import KeyBytes
-from bytestagui.base.controllers.app import BaseController
+from bytestagui.controllers.base import BaseController
 from collections import OrderedDict
 import configparser
 import logging
@@ -16,7 +16,9 @@ import os.path
 _logger = logging.getLogger(__name__)
 
 
-class BaseConfigController(BaseController):
+class ConfigController(BaseController):
+    '''Provides access to :class:`.ConfigParser`'''
+
     def __init__(self, application):
         BaseController.__init__(self, application)
         config_parser = configparser.ConfigParser()

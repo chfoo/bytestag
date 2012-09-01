@@ -6,13 +6,16 @@ from bytestag import basedir
 from bytestag.client import Client
 from bytestag.events import Observer
 from bytestag.keys import KeyBytes
-from bytestagui.base.controllers.app import BaseController
+from bytestagui.controllers.base import BaseController
+from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 import abc # @UnusedImport
 import os
 import threading
 
 
-class BaseDHTClientController(BaseController, metaclass=abc.ABCMeta):
+class DHTClientController(BaseController, metaclass=abc.ABCMeta):
+    '''Provides access to :class:`bytestag.client.Client`'''
+
     DISCONNECTED, CONNECTING, CONNECTED = range(3)
 
     def __init__(self, application):
@@ -34,7 +37,7 @@ class BaseDHTClientController(BaseController, metaclass=abc.ABCMeta):
         self._client = Client(basedir.cache_dir, (host, port), node_id)
         self._client.start()
 
-        thread = threading.Timer(2, self.connect)
+        thread = threading.Timer(1, self.connect)
         thread.daemon = True
         thread.start()
 
@@ -47,16 +50,18 @@ class BaseDHTClientController(BaseController, metaclass=abc.ABCMeta):
         return self._observer
 
     def connect(self):
-        self.observer(BaseDHTClientController.CONNECTING)
+        self.observer(DHTClientController.CONNECTING)
 
         join_network_task = self._client.dht_network.join_network(
             self._known_node_address)
 
         def cb(result):
             if result:
-                self.observer(BaseDHTClientController.CONNECTED)
+                invoke_in_main_thread(self.observer,
+                    DHTClientController.CONNECTED)
             else:
-                self.observer(BaseDHTClientController.DISCONNECTED)
+                invoke_in_main_thread(self.observer,
+                    DHTClientController.DISCONNECTED)
 
         join_network_task.observer.register(cb)
 
@@ -64,3 +69,4 @@ class BaseDHTClientController(BaseController, metaclass=abc.ABCMeta):
         self._client.stop()
         self._client.network._pool_executor.shutdown(wait)
         self._client.dht_network._pool_executor.shutdown(wait)
+        self._client.join()
