@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import queue
+import select
 import socket
 import socketserver
 import tempfile
@@ -63,16 +64,28 @@ class UDPServer(EventReactorMixin, Thread, socketserver.UDPServer):
         socketserver.UDPServer.__init__(self, address, UDPRequestHandler)
         self.event_reactor.register_handler(EventReactor.STOP_ID,
             self._stop_cb)
+        self._running = True
 
     def run(self):
         '''Start the server'''
 
-        _logger.debug('Network udp server started')
-        self.serve_forever()
+        while self._running:
+            _logger.debug('Network udp server started')
+
+            try:
+                self.serve_forever()
+            except select.error as e:
+                if e.args[0] == 4:
+                    _logger.exception('Possible issue with Qt. Restarting')
+                else:
+                    raise e
+
+            _logger.debug('Network udp server stopped')
 
     def _stop_cb(self, event_id):
+        self._running = False
         Thread(target=self.shutdown).start()
-        _logger.debug('Network udp server stopped')
+        _logger.debug('Network udp server stop requested')
 
 
 class UDPClient(object):
