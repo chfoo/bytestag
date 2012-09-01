@@ -48,7 +48,7 @@ class SharedDirsTableController(BaseController):
             self._tree_model.append(d)
 
     def _add_button_clicked_cb(self, *args):
-        dialog = QtGui.QFileDialog(self._prefs_dialog)
+        dialog = QtGui.QFileDialog(self._prefs_dialog, 'Select a folder')
         dialog.setFileMode(QtGui.QFileDialog.Directory)
 
         if not dialog.exec_():

@@ -11,6 +11,8 @@ from collections import OrderedDict
 import configparser
 import logging
 import os.path
+import random
+import uuid
 
 
 _logger = logging.getLogger(__name__)
@@ -21,13 +23,16 @@ class ConfigController(BaseController):
 
     def __init__(self, application):
         BaseController.__init__(self, application)
+
         config_parser = configparser.ConfigParser()
         default_share_dir = os.path.expanduser(os.path.join('~', 'Bytestag'))
 
-        config_parser.read_dict(OrderedDict([
+        host_random = random.Random(uuid.getnode())
+
+        self.defaults = defaults = OrderedDict([
             ('network', OrderedDict([
                 ('host', '0.0.0.0'),
-                ('port', 0),
+                ('port', host_random.randint(1024, 2 ** 16 - 1)),
                 ('node_id', KeyBytes().base64),
             ])),
             ('known_nodes', OrderedDict([
@@ -39,7 +44,12 @@ class ConfigController(BaseController):
             ('sharing', OrderedDict([
                 ('default_share_dir', default_share_dir),
             ])),
-        ]))
+            ('cache', OrderedDict([
+                ('max_size', 17179869184),
+            ])),
+        ])
+
+        config_parser.read_dict(defaults)
 
         filename = os.path.join(basedir.config_dir, 'bytestag.conf')
         config_parser.read([filename])
@@ -63,7 +73,9 @@ class ConfigController(BaseController):
             self._config_parser.write(f)
 
     def set(self, section, option, value):
-        self._config_parser[section][option] = value
+        assert isinstance(value, (str, int, float, bool))
+
+        self._config_parser[section][option] = str(value)
 
         self._observer(section, option, value)
 
@@ -72,3 +84,6 @@ class ConfigController(BaseController):
             return self._config_parser.getboolean(section, option)
 
         return self._config_parser[section][option]
+
+    def set_default(self, section, option):
+        self.set(section, option, self.defaults[section][option])

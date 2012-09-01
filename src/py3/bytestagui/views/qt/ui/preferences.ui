@@ -78,14 +78,17 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Server</string>
+          <string>Listening Address</string>
          </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit"/>
+           <widget class="QLineEdit" name="listening_host_edit"/>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_2">
+           <widget class="QSpinBox" name="listening_port_spin_box">
+            <property name="minimum">
+             <number>1024</number>
+            </property>
             <property name="maximum">
              <number>65535</number>
             </property>
@@ -125,11 +128,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
+          <widget class="QPushButton" name="default_share_dir_button"/>
          </item>
         </layout>
        </item>
@@ -147,7 +146,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBox">
+           <widget class="QSpinBox" name="cache_max_size_spin_box">
             <property name="maximum">
              <number>1073741824</number>
             </property>
@@ -164,12 +163,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="button_box">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::RestoreDefaults</set>
      </property>
     </widget>
    </item>
@@ -178,7 +177,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>button_box</sender>
    <signal>accepted()</signal>
    <receiver>preferences_dialog</receiver>
    <slot>accept()</slot>
@@ -194,7 +193,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>button_box</sender>
    <signal>rejected()</signal>
    <receiver>preferences_dialog</receiver>
    <slot>reject()</slot>

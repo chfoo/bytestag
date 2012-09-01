@@ -8,6 +8,7 @@ from bytestagui.controllers.config import ConfigController
 from bytestagui.controllers.dht import DHTClientController
 from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 from bytestagui.controllers.qt.main import MainWindowController
+from bytestagui.controllers.qt.preferences import PreferencesController
 from bytestagui.controllers.qt.shareddirs import (SharedDirsScanController,
     SharedDirsTableController)
 from bytestagui.controllers.qt.transfers import TransfersTableController
@@ -29,6 +30,7 @@ class Application(BaseApplication):
         self.new_singleton(SharedDirsScanController)
         self.new_singleton(SharedDirsTableController)
         self.new_singleton(TransfersTableController)
+        self.new_singleton(PreferencesController)
 
     def run(self):
         signal.signal(signal.SIGINT, self.stop)
