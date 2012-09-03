@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Bytestag</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../img/bytestag_app.ico</normaloff>../../img/bytestag_app.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -304,7 +308,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionOpen_Link"/>
+    <addaction name="open_link_action"/>
     <addaction name="separator"/>
     <addaction name="quit_action"/>
    </widget>
@@ -325,17 +329,6 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="main_status_bar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <action name="about_action">
    <property name="text">
     <string>&amp;About</string>
@@ -346,7 +339,7 @@
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionOpen_Link">
+  <action name="open_link_action">
    <property name="text">
     <string>Open &amp;Link</string>
    </property>

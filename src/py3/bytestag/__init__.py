@@ -15,7 +15,7 @@ import distutils.version
 
 __docformat__ = 'restructuredtext en'
 short_version = '0.2'  # N.N
-__version__ = '0.2b1'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
+__version__ = '0.3a1'  # N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
 description, long_description = __doc__.split('\n', 1)
 long_description = long_description.lstrip()
 

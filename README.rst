@@ -133,8 +133,7 @@ Documentation
 =============
 
 The documentation is located in the doc directory. Sphinx is used to generate
-the documents.
-They will be made available online when ready.
+the documents. They can be read at `<http://packages.python.org/Bytestag/>`_.
 
 Please update the release notes in the doc directory for releases.
 

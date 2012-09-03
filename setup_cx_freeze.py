@@ -24,7 +24,7 @@ build_exe_options = {
         'include_files': [
             ('src/py3/bytestagui/views/qt/ui/', 'bytestagui/views/qt/ui/'),
         ],
-        'icon': 'img/logo/bytestag_app.ico',
+        'icon': 'src/py3/bytestagui/views/img/bytestag_app.ico',
     },
     "bdist_dmg": {
         'volume-label': 'Bytestag',
