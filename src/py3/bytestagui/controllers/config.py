@@ -34,10 +34,10 @@ class ConfigController(BaseController):
                 ('host', '0.0.0.0'),
                 ('port', host_random.randint(1024, 2 ** 16 - 1)),
                 ('node_id', KeyBytes().base64),
+                ('default_known_node_host', 'torwuf.com'),
+                ('default_known_node_port', 38664),
             ])),
             ('known_nodes', OrderedDict([
-                ('host1', 'torwuf.com'),
-                ('port1', 38664),
             ])),
             ('shared_files', OrderedDict([
             ])),
