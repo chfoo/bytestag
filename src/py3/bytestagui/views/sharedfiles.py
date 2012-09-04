@@ -4,5 +4,5 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 
 
-DIRECTORY_HEADER_TEXT = 'Folder'
+TABLE_HEADER_TEXTS = ('Folder',)
 SCAN_PROGRESS_TEXT = 'Scanning file {filename} ({bytes_read})'

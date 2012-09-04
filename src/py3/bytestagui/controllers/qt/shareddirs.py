@@ -9,8 +9,7 @@ from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 from bytestagui.controllers.qt.uiloader import UILoaderController
 from bytestagui.controllers.shareddirs import SharedDirsController
 from bytestagui.models.qt.shareddirs import SharedDirsTableModel
-from bytestagui.views.sharedfiles import (SCAN_PROGRESS_TEXT,
-    DIRECTORY_HEADER_TEXT)
+from bytestagui.views.sharedfiles import SCAN_PROGRESS_TEXT, TABLE_HEADER_TEXTS
 
 
 class SharedDirsTableController(BaseController):
@@ -39,7 +38,7 @@ class SharedDirsTableController(BaseController):
 
     def _create_table(self):
         table_view = self._prefs_dialog.shared_files_table_view
-        tree_model = SharedDirsTableModel(DIRECTORY_HEADER_TEXT)
+        tree_model = SharedDirsTableModel(TABLE_HEADER_TEXTS)
 
         table_view.setModel(tree_model)
         self._tree_model = tree_model

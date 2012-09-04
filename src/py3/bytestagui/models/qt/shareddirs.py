@@ -6,10 +6,10 @@ from PySide import QtCore  #@UnresolvedImport
 
 
 class SharedDirsTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, header_text):
+    def __init__(self, header_texts):
         QtCore.QAbstractTableModel.__init__(self)
         self._filenames = []
-        self._header_text = header_text
+        self._header_texts = header_texts
 
     @property
     def filenames(self):
@@ -38,7 +38,7 @@ class SharedDirsTableModel(QtCore.QAbstractTableModel):
 
         if orientation == QtCore.Qt.Horizontal:
             if section == 0:
-                return self._header_text
+                return self._header_texts[0]
 
     def append(self, filename):
         index = QtCore.QModelIndex()

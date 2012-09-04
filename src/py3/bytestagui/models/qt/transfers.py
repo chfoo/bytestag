@@ -7,9 +7,9 @@ from bytestag.dht.network import StoreToNodeTask
 
 
 class TransfersTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, column_header_texts):
+    def __init__(self, header_texts):
         QtCore.QAbstractTableModel.__init__(self)
-        self._column_header_texts = column_header_texts
+        self._header_texts = header_texts
         self._tasks = []
 
     def rowCount(self, parent_index=None):
@@ -23,8 +23,8 @@ class TransfersTableModel(QtCore.QAbstractTableModel):
             return
 
         if orientation == QtCore.Qt.Horizontal:
-            if 0 <= section < len(self._column_header_texts):
-                return self._column_header_texts[section]
+            if 0 <= section < len(self._header_texts):
+                return self._header_texts[section]
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
         if not index.isValid():

@@ -3,14 +3,14 @@
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtCore, QtGui # @UnresolvedImport
-from bytestag.dht.network import (ReadStoreFromNodeTask, StoreToNodeTask,
+from bytestag.dht.network import (ReadStoreFromNodeTask, StoreToNodeTask, 
     StoreValueTask)
 from bytestagui.controllers.base import BaseController
 from bytestagui.controllers.dht import DHTClientController
 from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 from bytestagui.controllers.qt.uiloader import UILoaderController
 from bytestagui.models.qt.transfers import TransfersTableModel
-from bytestagui.views.transfers import ADDRESS_TEXT, KEY_TEXT, PROGRESS_TEXT
+from bytestagui.views.transfers import TABLE_HEADER_TEXTS
 
 
 class TransfersTableController(BaseController):
@@ -30,8 +30,7 @@ class TransfersTableController(BaseController):
 
     def _create_table(self):
         table_view = self._main_window.transfers_table_view
-        tree_model = TransfersTableModel(
-            ['', ADDRESS_TEXT, KEY_TEXT, PROGRESS_TEXT])
+        tree_model = TransfersTableModel(TABLE_HEADER_TEXTS)
 
         table_view.setModel(tree_model)
         self._tree_model = tree_model
