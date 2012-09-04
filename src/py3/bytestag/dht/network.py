@@ -587,7 +587,12 @@ class DHTNetwork(EventReactorMixin):
     def get_value(self, key, index):
         get_value_task = GetValueTask(self, key, index)
 
-        self._download_slot.queue(get_value_task)
+        def f():
+            self._pool_executor.submit(get_value_task)
+
+            return get_value_task
+
+        self._download_slot.add(f)
 
         return get_value_task
 
@@ -1102,14 +1107,14 @@ class GetValueTask(Task):
         self._controller = controller
         self._key = key
         self._index = index
-        find_value_task = controller.find_value(key, index)
+        find_value_task = controller.find_value_shortlist(key, index)
 
         self.hook_task(find_value_task)
 
         self._shortlist = find_value_task.result()
         self._useful_node_list = NodeList(self._shortlist.useful_nodes)
 
-        if not self.useful_node_list:
+        if not self._useful_node_list:
             return None
 
         self._useful_node_list.sort_distance(key)
@@ -1123,6 +1128,9 @@ class GetValueTask(Task):
                 break
             else:
                 self._file = None
+
+            if self.is_running:
+                return
 
         if self.file:
             self._replicate_value()

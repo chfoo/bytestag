@@ -105,3 +105,31 @@ class TestCollectionInfo(unittest.TestCase):
         result_bytes = info.to_bytes()
 
         self.assertEqual(s, result_bytes)
+
+    def test_read_json_extended(self):
+        '''It should read in json with extended info'''
+
+        s = (b'{'
+            b'"!":"BytestagCollectionInfo",'
+            b'"comment":"hello",'
+            b'"files":['
+                b'{'
+                b'"!":"BytestagFileInfo",'
+                b'"hash":"jbip9t8iC9lEz3jndkm5I2fTWV0=",'
+                b'"parts":["jbip9t8iC9lEz3jndkm5I2fTWV0="]'
+                b'}'
+            b'],'
+            b'"name":"my video",'
+            b'"timestamp":123456789'
+        b'}')
+
+        info = CollectionInfo.from_bytes(s)
+
+        self.assertIsInstance(info.file_infos[0], FileInfo)
+        self.assertEqual(info.comment, 'hello')
+        self.assertEqual(info.name, 'my video')
+        self.assertEqual(info.timestamp, 123456789)
+
+        result_bytes = info.to_bytes()
+
+        self.assertEqual(s, result_bytes)

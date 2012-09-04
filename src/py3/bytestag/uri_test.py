@@ -13,7 +13,7 @@ class TestMagnetURI(unittest.TestCase):
         uri = MagnetURI.parse(
             'magnet:?xt=urn:btih:DA39A3EE5E6B4B0D3255BFEF95601890AFD80709')
 
-        self.assertEqual(uri.bittorent_info_hash, KeyBytes(
+        self.assertEqual(uri.bittorrent_info_hash, KeyBytes(
             'DA39A3EE5E6B4B0D3255BFEF95601890AFD80709'))
 
     def test_bytestag_hash(self):

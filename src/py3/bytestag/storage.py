@@ -2,12 +2,13 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestag.dht.models import FileInfo
+from bytestag.dht.models import FileInfo, CollectionInfo, BitTorrentInfoFile
 from bytestag.events import Task
 from bytestag.keys import KeyBytes
 from bytestag.tables import KVPTable, KVPRecord, KVPID
 import collections
 import contextlib
+import fnmatch
 import hashlib
 import itertools
 import logging
@@ -406,7 +407,6 @@ class CollectionInfoTypes(object):
     '''Types of CollectionInfo file types'''
 
     DUMMY, BYTESTAG, BITTORRENT = range(3)
-    BYTESTAG_COOKIE = b'{"!":"BytestagCollectionInfo"'
 
 
 class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
@@ -767,21 +767,38 @@ class SharedFilesHashTask(Task):
         read.
     '''
 
-    def _walk_dir(self, path):
+    FILTERS = ('*.bytestag-incomplete',)
+
+    def _walk_dir(self, path, filters=None):
         '''Walk a directory in a sorted order and yield path, size and mtime'''
 
         # TODO: may run into recursion
         for dirpath, dirnames, filenames in os.walk(path, followlinks=True):
+            if filters:
+                matches = []
+
+                for pattern in filters:
+                    matches.extend(fnmatch.filter(dirnames, pattern))
+
+                accepted = set(dirnames)
+                accepted.difference_update(frozenset(matches))
+
+                dirnames[:] = list(accepted)
+
             dirnames.sort()
 
             for filename in sorted(filenames):
+                if any((fnmatch.fnmatch(
+                filename, filter_) for filter_ in filters)):
+                    continue
+
                 file_path = os.path.join(dirpath, filename)
                 size = os.path.getsize(file_path)
                 mtime = int(os.path.getmtime(file_path))
 
                 yield file_path, size, mtime
 
-    def run(self, table, part_size=2 ** 18):
+    def run(self, table, part_size=2 ** 18, filters=FILTERS):
         self._table = table
         self._part_size = part_size
 
@@ -789,7 +806,7 @@ class SharedFilesHashTask(Task):
             if not self.is_running:
                 return
 
-            self._hash_directory(directory)
+            self._hash_directory(directory, filters)
 
         if not table.shared_directories:
             _logger.info('No directories to hash')
@@ -798,10 +815,10 @@ class SharedFilesHashTask(Task):
 
         self._table.value_changed_observer(None)
 
-    def _hash_directory(self, directory):
+    def _hash_directory(self, directory, filters):
         _logger.info('Hashing directory %s', directory)
 
-        for file_path, size, mtime in self._walk_dir(directory):
+        for file_path, size, mtime in self._walk_dir(directory, filters):
             if not self.is_running:
                 return
 
@@ -883,25 +900,19 @@ class SharedFilesHashTask(Task):
                     '(?, ?)', (row_id, collection_type))
 
     def _get_collection_type(self, path):
-        cookie_len = len(CollectionInfoTypes.BYTESTAG_COOKIE)
+        cookie_len = len(CollectionInfo.SIGNATURE)
 
         with open(path, 'rb') as f:
             data = f.read(cookie_len)
 
-            if data.startswith(CollectionInfoTypes.BYTESTAG_COOKIE):
+            if CollectionInfo.is_valid_signature(data):
                 return CollectionInfoTypes.BYTESTAG
 
             if path.endswith('.torrent'):
                 f.seek(0)
 
-                if self._check_bittorrent_file_contents(f):
+                if BitTorrentInfoFile.is_valid_signature(f.read(1024)):
                     return CollectionInfoTypes.BITTORRENT
-
-    def _check_bittorrent_file_contents(self, f):
-        data = f.read(1024)
-
-        if b'info' in data and b'pieces' in data:
-            return True
 
     def _clean_database(self):
         _logger.info('Cleaning database')

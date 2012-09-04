@@ -4,8 +4,10 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestag.dht.tables import Node
 from bytestag.keys import KeyBytes
+from bytestag.lib import bencode
 import abc
 import collections
+import hashlib
 import json
 import logging
 
@@ -54,6 +56,10 @@ class Serializable(JSONDumpable):
     def to_bytes(self):
         return json.dumps(self.to_json_dumpable(), False, True, True, True,
             None, None, (',', ':'), None, sort_keys=True).encode()
+
+    @property
+    def key(self):
+        return KeyBytes(hashlib.sha1(self.to_bytes()).digest())
 
 
 class NodeList(list, JSONDumpable):
@@ -232,6 +238,7 @@ class FileInfo(Serializable):
     PART_HASHES = 'parts'
     SIZE = 'size'
     FILENAME = 'filename'
+    SIGNATURE = b'{"!":"BytestagFileInfo"'
     __slots__ = ('_file_hash', '_part_hashes', '_filename')
 
     def __init__(self, file_hash, part_hashes, size=None, filename=None):
@@ -327,6 +334,10 @@ class FileInfo(Serializable):
 
         return d
 
+    @classmethod
+    def is_valid_signature(cls, data):
+        return data.startswith(FileInfo.SIGNATURE)
+
 
 class CollectionInfo(Serializable):
     '''Represents a collection of file infos'''
@@ -335,14 +346,18 @@ class CollectionInfo(Serializable):
     FILES = 'files'
     COMMENT = 'comment'
     TIMESTAMP = 'timestamp'
-    __slots__ = ('_file_infos', '_comment', '_timestamp')
+    NAME = 'name'
+    __slots__ = ('_file_infos', '_comment', '_timestamp', '_name')
+    SIGNATURE = b'{"!":"BytestagCollectionInfo"'
 
-    def __init__(self, file_infos, comment=None, timestamp=None):
+    def __init__(self, file_infos, name=None, comment=None, timestamp=None):
         self._file_infos = None
         self._comment = None
         self._timestamp = None
+        self._name = name
 
         self.file_infos = file_infos
+        self.name = name
         self.comment = comment
         self.timestamp = timestamp
 
@@ -359,6 +374,17 @@ class CollectionInfo(Serializable):
                 raise TypeError('Expected FileInfo')
 
         self._file_infos = file_infos
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if not isinstance(name, str) and name is not None:
+            raise TypeError('Expected str or None')
+
+        self._name = name
 
     @property
     def comment(self):
@@ -390,8 +416,9 @@ class CollectionInfo(Serializable):
     def from_json_loadable(cls, d):
         return CollectionInfo(
             list(map(FileInfo.from_json_loadable, d[CollectionInfo.FILES])),
-            d.get(CollectionInfo.COMMENT),
-            d.get(CollectionInfo.TIMESTAMP)
+            name=d.get(CollectionInfo.NAME),
+            comment=d.get(CollectionInfo.COMMENT),
+            timestamp=d.get(CollectionInfo.TIMESTAMP)
         )
 
     def to_json_dumpable(self):
@@ -408,4 +435,32 @@ class CollectionInfo(Serializable):
         if self._timestamp:
             d[CollectionInfo.TIMESTAMP] = self._timestamp
 
+        if self._name:
+            d[CollectionInfo.NAME] = self._name
+
         return d
+
+    @classmethod
+    def is_valid_signature(cls, data):
+        return data.startswith(CollectionInfo.SIGNATURE)
+
+
+class BitTorrentInfoFile(Serializable, dict):
+    @classmethod
+    def from_json_loadable(cls, o):
+        return BitTorrentInfoFile(o)
+
+    @abc.abstractmethod
+    def to_json_dumpable(self):
+        return self
+
+    @classmethod
+    def is_valid_signature(cls, data):
+        return b'info' in data and b'pieces' in data
+
+    @classmethod
+    def from_bytes(cls, bytes_):
+        return BitTorrentInfoFile(bencode.bdecode(bytes_))
+
+    def to_bytes(self):
+        return bencode.bencode(self)

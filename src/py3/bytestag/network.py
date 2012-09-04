@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestag.events import (EventReactorMixin, EventReactor, EventScheduler,
+from bytestag.events import (EventReactorMixin, EventReactor, EventScheduler, 
     Task, EventID, WrappedThreadPoolExecutor)
 from bytestag.keys import bytes_to_b64
 from socketserver import BaseRequestHandler
@@ -10,6 +10,7 @@ from threading import Thread
 import base64
 import binascii
 import collections
+import errno
 import io
 import json
 import logging
@@ -75,7 +76,7 @@ class UDPServer(EventReactorMixin, Thread, socketserver.UDPServer):
             try:
                 self.serve_forever()
             except select.error as e:
-                if e.args[0] == 4:
+                if e.args[0] == errno.EINTR:
                     _logger.exception('Possible issue with Qt. Restarting')
                 else:
                     raise e

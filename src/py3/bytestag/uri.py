@@ -47,7 +47,7 @@ class MagnetURI(object):
             return self._params['xt'][0]
 
     @property
-    def bittorent_info_hash(self):
+    def bittorrent_info_hash(self):
         exact_topic = self.exact_topic
 
         if exact_topic and exact_topic.startswith('urn:btih:'):

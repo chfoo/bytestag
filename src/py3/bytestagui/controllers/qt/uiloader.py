@@ -14,6 +14,7 @@ class UILoaderController(BaseController):
         BaseController.__init__(self, application)
         self.main_window = self.load_widget('ui/main.ui')
         self.preferences_dialog = self.load_widget('ui/preferences.ui')
+        self.open_link_dialog = self.load_widget('ui/open_link.ui')
 
     def load_widget(self, resource_name):
         loader = QtUiTools.QUiLoader()

@@ -575,6 +575,9 @@ class FnTaskSlot(threading.Thread):
                 else:
                     _logger.debug('Fn task slot execute')
                     task = fn(*args, **kwargs)
+
+                    assert isinstance(task, Task), 'got {}'.format(task)
+
                     event.task = task
                     event.set()
 
