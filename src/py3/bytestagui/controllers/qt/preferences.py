@@ -5,7 +5,7 @@
 from bytestagui.controllers.base import BaseController
 from bytestagui.controllers.config import ConfigController
 from bytestagui.controllers.qt.uiloader import UILoaderController
-from PySide import QtGui, QtCore # @UnresolvedImport
+from PySide import QtGui, QtCore
 
 
 class PreferencesController(BaseController):

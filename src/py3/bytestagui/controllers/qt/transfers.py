@@ -2,8 +2,8 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from PySide import QtCore, QtGui # @UnresolvedImport
-from bytestag.dht.network import (ReadStoreFromNodeTask, StoreToNodeTask, 
+from PySide import QtCore
+from bytestag.dht.network import (ReadStoreFromNodeTask, StoreToNodeTask,
     StoreValueTask)
 from bytestagui.controllers.base import BaseController
 from bytestagui.controllers.dht import DHTClientController

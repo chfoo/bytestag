@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from PySide import QtCore, QtUiTools # @UnresolvedImport
+from PySide import QtCore, QtUiTools
 from bytestagui.controllers.base import BaseController
 from bytestagui.views.qt.resource import Resource
 

@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from PySide import QtGui # @UnresolvedImport
+from PySide import QtGui
 from bytestagui.controllers.base import BaseApplication
 from bytestagui.controllers.config import ConfigController
 from bytestagui.controllers.dht import DHTClientController
