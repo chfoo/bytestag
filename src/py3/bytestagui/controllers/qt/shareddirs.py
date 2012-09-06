@@ -21,6 +21,9 @@ class SharedDirsTableController(BaseController):
         self._shared_dirs_controller = self.application.singletons[
             SharedDirsController]
         loader = self.application.singletons[UILoaderController]
+        self._shared_dirs = list(
+            self._shared_dirs_controller.shared_directories)
+
         self._prefs_dialog = loader.preferences_dialog
 
         self._prefs_dialog.shared_files_remove_button.setEnabled(False)
@@ -38,13 +41,13 @@ class SharedDirsTableController(BaseController):
 
     def _create_table(self):
         table_view = self._prefs_dialog.shared_files_table_view
-        tree_model = SharedDirsTableModel(TABLE_HEADER_TEXTS)
+        self._tree_model = tree_model = SharedDirsTableModel(
+            TABLE_HEADER_TEXTS, self._shared_dirs)
+        proxy_model = QtGui.QSortFilterProxyModel(table_view)
 
-        table_view.setModel(tree_model)
-        self._tree_model = tree_model
-
-        for d in self._shared_dirs_controller.shared_directories:
-            self._tree_model.append(d)
+        proxy_model.setSourceModel(tree_model)
+        proxy_model.setDynamicSortFilter(True)
+        table_view.setModel(proxy_model)
 
     def _add_button_clicked_cb(self, *args):
         dialog = QtGui.QFileDialog(self._prefs_dialog, 'Select a folder')
@@ -54,24 +57,38 @@ class SharedDirsTableController(BaseController):
             return
 
         filenames = dialog.selectedFiles()
+        position = len(self._shared_dirs)
 
         for filename in filenames:
-            if filename not in self._shared_dirs_controller.shared_directories:
-                self._tree_model.append(filename)
+            if filename not in self._shared_dirs:
+                filenames.append(filename)
+                self._shared_dirs.append(filename)
 
         self._shared_dirs_controller.add_directory(*filenames)
+        self._tree_model.insertRows(position, len(filenames))
 
     def _remove_button_clicked_cb(self, *args):
-        indexes = self._prefs_dialog.shared_files_table_view.selectedIndexes()
+        table_view = self._prefs_dialog.shared_files_table_view
+        proxy_model = table_view.model()
+        indexes = table_view.selectionModel().selectedRows()
 
-        l = []
+        filenames = []
+        rows_to_del = []
+
         for index in indexes:
-            filename = self._tree_model.filenames[index.row()]
+            real_index = proxy_model.mapToSource(index)
+            filename = self._shared_dirs[real_index.row()]
 
-            self._tree_model.remove(filename)
-            l.append(filename)
+            filenames.append(filename)
+            rows_to_del.append(real_index.row())
 
-        self._shared_dirs_controller.remove_directory(*l)
+        self._shared_dirs_controller.remove_directory(*filenames)
+
+        for row in rows_to_del:
+            self._tree_model.removeRows(row)
+
+        for filename in filenames:
+            self._shared_dirs.remove(filename)
 
     def _table_view_activated_cb(self, index):
         self._prefs_dialog.shared_files_remove_button.setEnabled(True)

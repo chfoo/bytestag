@@ -6,9 +6,9 @@ from PySide import QtCore
 
 
 class SharedDirsTableModel(QtCore.QAbstractTableModel):
-    def __init__(self, header_texts):
+    def __init__(self, header_texts, filenames):
         QtCore.QAbstractTableModel.__init__(self)
-        self._filenames = []
+        self._filenames = filenames
         self._header_texts = header_texts
 
     @property
@@ -40,24 +40,16 @@ class SharedDirsTableModel(QtCore.QAbstractTableModel):
             if section == 0:
                 return self._header_texts[0]
 
-    def append(self, filename):
-        index = QtCore.QModelIndex()
-        position = len(self._filenames)
-        rows = 1
-
-        self.beginInsertRows(index, position, position + rows - 1)
-        self._filenames.append(filename)
+    def insertRows(self, position, rows=1, index=QtCore.QModelIndex()):
+        self.beginInsertRows(QtCore.QModelIndex(), position,
+            position + rows - 1)
         self.endInsertRows()
 
         return True
 
-    def remove(self, filename):
-        index = QtCore.QModelIndex()
-        position = self._filenames.index(filename)
-        rows = 1
-
-        self.beginRemoveRows(index, position, position + rows - 1)
-        self._filenames.remove(filename)
+    def removeRows(self, position, rows=1, index=QtCore.QModelIndex()):
+        self.beginRemoveRows(QtCore.QModelIndex(), position,
+            position + rows - 1)
         self.endRemoveRows()
 
         return True
