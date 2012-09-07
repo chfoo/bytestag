@@ -30,7 +30,7 @@ class TransfersTableModel(QtCore.QAbstractTableModel):
         if not index.isValid():
             return
 
-        if not 0 <= index.row() < len(self._tasks):
+        if not 0 <= index.row() < len(self._tasks) + 1:
             return
 
         if role == QtCore.Qt.DisplayRole:
@@ -55,7 +55,6 @@ class TransfersTableModel(QtCore.QAbstractTableModel):
 
                 return '{}:{}'.format(task.key.base32, task.index.base32)
             elif col == 3:
-                # FIXME: this should be a progress bar
                 if not task.progress:
                     return 0.0
 

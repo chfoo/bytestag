@@ -2,7 +2,7 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from PySide import QtCore
+from PySide import QtCore, QtGui
 from bytestag.dht.network import (ReadStoreFromNodeTask, StoreToNodeTask,
     StoreValueTask)
 from bytestagui.controllers.base import BaseController
@@ -10,6 +10,7 @@ from bytestagui.controllers.dht import DHTClientController
 from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 from bytestagui.controllers.qt.uiloader import UILoaderController
 from bytestagui.models.qt.transfers import TransfersTableModel
+from bytestagui.views.qt.transfers import TransferTableViewDelegate
 from bytestagui.views.transfers import TABLE_HEADER_TEXTS
 
 
@@ -31,21 +32,14 @@ class TransfersTableController(BaseController):
     def _create_table(self):
         table_view = self._main_window.transfers_table_view
         tree_model = TransfersTableModel(TABLE_HEADER_TEXTS)
+        proxy_model = QtGui.QSortFilterProxyModel(table_view)
+        proxy_model.setSourceModel(tree_model)
+        proxy_model.setDynamicSortFilter(True)
 
-        table_view.setModel(tree_model)
+        table_view.setModel(proxy_model)
+        table_view.setItemDelegate(TransferTableViewDelegate(table_view))
+
         self._tree_model = tree_model
-
-        # TODO: figure out how to use progress bars in item views
-#        self._progress_bars = []
-#
-#        for i in range(100):
-#            index = self._tree_model.createIndex(i, 3)
-#            progress_bar = QtGui.QProgressBar()
-#
-#            progress_bar.minimum = 0
-#            progress_bar.maximum = 1
-#            self._progress_bars.append(progress_bar)
-#            table_view.setIndexWidget(index, progress_bar)
 
     def _update_table(self):
         self._tree_model.emit_data_changed()
