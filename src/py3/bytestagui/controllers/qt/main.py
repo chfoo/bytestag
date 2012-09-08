@@ -8,6 +8,7 @@ from bytestagui.controllers.dht import DHTClientController
 from bytestagui.controllers.qt.invoker import invoke_in_main_thread
 from bytestagui.controllers.qt.uiloader import UILoaderController
 from bytestagui.views.dht import CONNECTING_MSG, CONNECTED_MSG, DISCONNECTED_MSG
+from bytestagui.views.resource import Resource
 import bytestagui
 
 
@@ -36,6 +37,7 @@ class MainWindowController(BaseController):
 
         self._dht_client.observer.register(dht_client_cb)
 
+        self._set_icon()
         self._main_window.show()
 
     def _about_action_activated_cb(self, *args):
@@ -59,3 +61,8 @@ class MainWindowController(BaseController):
     def _shared_files_preferences_button_cb(self):
         self._prefs_dialog.tab_widget.setCurrentIndex(0)
         self._prefs_dialog.show()
+
+    def _set_icon(self):
+        icon = QtGui.QIcon(Resource.get_fallback_path('img/bytestag_app.svg'))
+        self._main_window.setWindowIcon(icon)
+        self._prefs_dialog.setWindowIcon(icon)

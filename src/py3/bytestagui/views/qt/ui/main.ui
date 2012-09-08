@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Bytestag</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../img/bytestag_app.ico</normaloff>../../img/bytestag_app.ico</iconset>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>

@@ -4,7 +4,7 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from PySide import QtCore, QtUiTools
 from bytestagui.controllers.base import BaseController
-from bytestagui.views.qt.resource import Resource
+from bytestagui.views.qt.resource import QTResource
 
 
 class UILoaderController(BaseController):
@@ -21,7 +21,7 @@ class UILoaderController(BaseController):
         qt_file = QtCore.QBuffer()
 
         qt_file.open(QtCore.QBuffer.ReadWrite)
-        qt_file.write(Resource.get_bytes(resource_name))
+        qt_file.write(QTResource.get_bytes(resource_name))
         qt_file.seek(0)
 
         return loader.load(qt_file)
