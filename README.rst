@@ -34,14 +34,9 @@ You will need:
 1. Python >=3.2
 2. Python module bitstring >=3.0
 
-If you want the GUI (for GNU/Linux), you will also need:
+If you want the GUI you will need:
 
-1. PyGObject >=3.0 (which should include gobject-introspection)
-2. GTK+3
-
-If you want the GUI (for Windows, MacOS, etc.), you will need:
-
-1. PySide
+1. PySide (for Python 3)
 2. Qt
 
 Install
@@ -138,8 +133,7 @@ Documentation
 =============
 
 The documentation is located in the doc directory. Sphinx is used to generate
-the documents.
-They will be made available online when ready.
+the documents. They can be read at `<http://packages.python.org/Bytestag/>`_.
 
 Please update the release notes in the doc directory for releases.
 

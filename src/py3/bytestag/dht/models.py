@@ -4,7 +4,10 @@
 # Licensed under GNU GPLv3. See COPYING.txt for details.
 from bytestag.dht.tables import Node
 from bytestag.keys import KeyBytes
+from bytestag.lib import bencode
+import abc
 import collections
+import hashlib
 import json
 import logging
 
@@ -35,7 +38,31 @@ class JSONKeys(object):
         GET_VALUE = 'getval'
 
 
-class NodeList(list):
+class JSONDumpable(metaclass=abc.ABCMeta):
+    @abc.abstractclassmethod
+    def from_json_loadable(cls, o):  # @NoSelf
+        pass
+
+    @abc.abstractmethod
+    def to_json_dumpable(self):
+        pass
+
+
+class Serializable(JSONDumpable):
+    @classmethod
+    def from_bytes(cls, bytes_):
+        return cls.from_json_loadable(json.loads(bytes_.decode()))
+
+    def to_bytes(self):
+        return json.dumps(self.to_json_dumpable(), False, True, True, True,
+            None, None, (',', ':'), None, sort_keys=True).encode()
+
+    @property
+    def key(self):
+        return KeyBytes(hashlib.sha1(self.to_bytes()).digest())
+
+
+class NodeList(list, JSONDumpable):
     '''A list of nodes
 
     JSON format
@@ -112,7 +139,7 @@ class NodeList(list):
 
 
 class KVPExchangeInfo(collections.namedtuple('KVPExchangeInfo',
-['key', 'index', 'size', 'timestamp'])):
+['key', 'index', 'size', 'timestamp']), JSONDumpable):
     '''Description about a key-value used for storage decisions.'''
 
     __slots__ = ()
@@ -163,7 +190,7 @@ class KVPExchangeInfo(collections.namedtuple('KVPExchangeInfo',
         }
 
 
-class KVPExchangeInfoList(list):
+class KVPExchangeInfoList(list, JSONDumpable):
     '''A list of :class:`KVPExchangeInfo`'''
 
     @classmethod
@@ -203,54 +230,237 @@ class KVPExchangeInfoList(list):
         return l
 
 
-class FileHashInfo(object):
+class FileInfo(Serializable):
     '''Represents the hashes of a file and its parts.'''
 
-    NAME = 'FileHashInfo'
-    KEY_TYPE = '!'
-    KEY_HASH = 'hash'
-    KEY_PART_HASHES = 'parts'
+    HEADER = 'BytestagFileInfo'
+    HASH = 'hash'
+    PART_HASHES = 'parts'
+    SIZE = 'size'
+    FILENAME = 'filename'
+    SIGNATURE = b'{"!":"BytestagFileInfo"'
+    __slots__ = ('_file_hash', '_part_hashes', '_filename')
 
-    def __init__(self, file_hash, part_hashes):
-        self._file_hash = KeyBytes(file_hash)
-        self._part_hashes = list(map(KeyBytes, part_hashes))
+    def __init__(self, file_hash, part_hashes, size=None, filename=None):
+        self._file_hash = None
+        self._part_hashes = None
+        self._size = None
+        self._filename = None
+
+        self.file_hash = file_hash
+        self.part_hashes = part_hashes
+        self.size = size
+        self.filename = filename
+
+    @property
+    def file_hash(self):
+        return self._file_hash
+
+    @file_hash.setter
+    def file_hash(self, bytes_):
+        if not isinstance(bytes_, bytes):
+            raise TypeError('Expected bytes, got {}')
+
+        self._file_hash = KeyBytes(bytes_)
+
+    @property
+    def part_hashes(self):
+        return self._part_hashes
+
+    @part_hashes.setter
+    def part_hashes(self, hashes):
+        hashes[0]
+
+        for hash_ in hashes:
+            if not isinstance(hash_, bytes):
+                raise TypeError('Expected bytes')
+
+        self._part_hashes = list(map(KeyBytes, hashes))
+
+    @property
+    def size(self):
+        return self._size
+
+    @size.setter
+    def size(self, o):
+        if o is None:
+            self._size = None
+        elif not isinstance(o, int):
+            raise TypeError('Expected int')
+        elif o < 0:
+            raise ValueError('Size cannot be negative')
+
+        self._size = o
+
+    @property
+    def filename(self):
+        return self._filename
+
+    @filename.setter
+    def filename(self, o):
+        if o is None:
+            self._filename = None
+            return
+
+        o[0]
+
+        for name in o:
+            if not isinstance(name, str):
+                raise TypeError('Expected str')
+
+        self._filename = o
 
     @classmethod
-    def from_json_loadable(cls, o):
-        dict_obj = json.loads(o)
-
-        if not isinstance(dict_obj, dict):
-            raise TypeError('Not a dict')
-
-        file_hash = dict_obj[FileHashInfo.KEY_HASH]
-        part_hashes = dict_obj[FileHashInfo.KEY_PART_HASHES]
-        part_hashes = list(map(KeyBytes, part_hashes))
-
-        return FileHashInfo(file_hash, part_hashes)
-
-    @classmethod
-    def from_bytes(cls, bytes_):
-        return FileHashInfo.from_json_loadable(json.loads(bytes_.decode()))
+    def from_json_loadable(cls, d):
+        return FileInfo(
+            KeyBytes(d[FileInfo.HASH]),
+            list(map(KeyBytes, d[FileInfo.PART_HASHES])),
+            d.get(FileInfo.SIZE),
+            d.get(FileInfo.FILENAME),
+        )
 
     def to_json_dumpable(self):
-        part_hashes = list([b.base64 for b in self._part_hashes])
-
         d = {
-            FileHashInfo.KEY_TYPE: FileHashInfo.NAME,
-            FileHashInfo.KEY_HASH: self._file_hash.base64,
-            FileHashInfo.KEY_PART_HASHES: part_hashes,
+            '!': FileInfo.HEADER,
+            FileInfo.HASH: self._file_hash.base64,
+            FileInfo.PART_HASHES: list(b.base64 for b in self._part_hashes),
         }
+
+        if self._filename:
+            d[FileInfo.FILENAME] = self._filename
+
+        if self._size:
+            d[FileInfo.SIZE] = self._size
 
         return d
 
+    @classmethod
+    def is_valid_signature(cls, data):
+        return data.startswith(FileInfo.SIGNATURE)
+
+
+class CollectionInfo(Serializable):
+    '''Represents a collection of file infos'''
+
+    HEADER = 'BytestagCollectionInfo'
+    FILES = 'files'
+    COMMENT = 'comment'
+    TIMESTAMP = 'timestamp'
+    NAME = 'name'
+    __slots__ = ('_file_infos', '_comment', '_timestamp', '_name')
+    SIGNATURE = b'{"!":"BytestagCollectionInfo"'
+
+    def __init__(self, file_infos, name=None, comment=None, timestamp=None):
+        self._file_infos = None
+        self._comment = None
+        self._timestamp = None
+        self._name = name
+
+        self.file_infos = file_infos
+        self.name = name
+        self.comment = comment
+        self.timestamp = timestamp
+
+    @property
+    def file_infos(self):
+        return self._file_infos
+
+    @file_infos.setter
+    def file_infos(self, file_infos):
+        file_infos[0]
+
+        for file_info in file_infos:
+            if not isinstance(file_info, FileInfo):
+                raise TypeError('Expected FileInfo')
+
+        self._file_infos = file_infos
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if not isinstance(name, str) and name is not None:
+            raise TypeError('Expected str or None')
+
+        self._name = name
+
+    @property
+    def comment(self):
+        return self._comment
+
+    @comment.setter
+    def comment(self, comment):
+        if not isinstance(comment, str) and comment is not None:
+            raise TypeError('Expected str or None')
+
+        self._comment = comment
+
+    @property
+    def timestamp(self):
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, timestamp):
+        if timestamp is None:
+            self._timestamp = timestamp
+        elif not isinstance(timestamp, int):
+            raise TypeError('Expected int')
+        elif timestamp < 0:
+            raise ValueError('timestamp must not be negative')
+
+        self._timestamp = timestamp
+
+    @classmethod
+    def from_json_loadable(cls, d):
+        return CollectionInfo(
+            list(map(FileInfo.from_json_loadable, d[CollectionInfo.FILES])),
+            name=d.get(CollectionInfo.NAME),
+            comment=d.get(CollectionInfo.COMMENT),
+            timestamp=d.get(CollectionInfo.TIMESTAMP)
+        )
+
+    def to_json_dumpable(self):
+        files = list([i.to_json_dumpable() for i in self._file_infos])
+
+        d = {
+            '!': CollectionInfo.HEADER,
+            CollectionInfo.FILES: files
+        }
+
+        if self._comment:
+            d[CollectionInfo.COMMENT] = self._comment
+
+        if self._timestamp:
+            d[CollectionInfo.TIMESTAMP] = self._timestamp
+
+        if self._name:
+            d[CollectionInfo.NAME] = self._name
+
+        return d
+
+    @classmethod
+    def is_valid_signature(cls, data):
+        return data.startswith(CollectionInfo.SIGNATURE)
+
+
+class BitTorrentInfoFile(Serializable, dict):
+    @classmethod
+    def from_json_loadable(cls, o):
+        return BitTorrentInfoFile(o)
+
+    @abc.abstractmethod
+    def to_json_dumpable(self):
+        return self
+
+    @classmethod
+    def is_valid_signature(cls, data):
+        return b'info' in data and b'pieces' in data
+
+    @classmethod
+    def from_bytes(cls, bytes_):
+        return BitTorrentInfoFile(bencode.bdecode(bytes_))
+
     def to_bytes(self):
-        return json.dumps(self.to_json_dumpable(), sort_keys=True).encode()
-
-
-class CollectionInfo(object):
-    '''to be written'''
-
-    # TODO:
-    def __init__(self):
-        pass
-
+        return bencode.bencode(self)

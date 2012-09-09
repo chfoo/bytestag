@@ -6,9 +6,10 @@ import argparse
 import datetime
 import logging
 import os.path
+import sys
 
 
-def main(default_gui='gtk'):
+def main(default_gui='qt'):
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--log-level', help='Python log level')
     arg_parser.add_argument('--enable-disk-log', action='store_true',
@@ -31,11 +32,13 @@ def main(default_gui='gtk'):
     logging.basicConfig(**log_args)
 
     if args.gui_toolkit.lower() == 'qt':
-        from bytestagui.qt.controllers.app import Application as QTApplication
+        from bytestagui.controllers.qt.app import Application as QTApplication
         Application = QTApplication
     else:
-        from bytestagui.gtk.controllers.app import Application as GTKApplication
+        from bytestagui.controllers.qt.app import Application as GTKApplication
         Application = GTKApplication
 
     app = Application()
-    app.run()
+    code = app.run()
+
+    sys.exit(code or 0)

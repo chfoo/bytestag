@@ -2,12 +2,13 @@
 # This file is part of Bytestag.
 # Copyright © 2012 Christopher Foo <chris.foo@gmail.com>.
 # Licensed under GNU GPLv3. See COPYING.txt for details.
-from bytestag.dht.models import FileHashInfo
+from bytestag.dht.models import FileInfo, CollectionInfo, BitTorrentInfoFile
 from bytestag.events import Task
 from bytestag.keys import KeyBytes
 from bytestag.tables import KVPTable, KVPRecord, KVPID
 import collections
 import contextlib
+import fnmatch
 import hashlib
 import itertools
 import logging
@@ -165,6 +166,7 @@ class SQLite3Mixin(object):
         con.row_factory = sqlite3.Row
         con.execute('PRAGMA synchronous=NORMAL')
         con.execute('PRAGMA journal_mode=WAL')
+        con.execute('PRAGMA foreign_keys = ON')
 
         self._num_connections += 1
         _logger.debug('Begin transaction current=%d', self._num_connections)
@@ -401,6 +403,12 @@ class ReadOnlyTableError(Exception):
     pass
 
 
+class CollectionInfoTypes(object):
+    '''Types of CollectionInfo file types'''
+
+    DUMMY, BYTESTAG, BITTORRENT = range(3)
+
+
 class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
     '''Provides a KVPTable interface to shared files split into pieces.'''
 
@@ -432,6 +440,12 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
                 'file_id INTEGER NOT NULL,'
                 'file_offset INTEGER NOT NULL,'
                 'last_update INTEGER DEFAULT 0,'
+                'FOREIGN KEY (file_id) REFERENCES files (id)'
+                'ON DELETE CASCADE'
+                ')')
+            con.execute('CREATE TABLE IF NOT EXISTS collections ('
+                'file_id INTEGER PRIMARY KEY,'
+                'type INTEGER NOT NULL,'
                 'FOREIGN KEY (file_id) REFERENCES files (id)'
                 'ON DELETE CASCADE'
                 ')')
@@ -524,7 +538,7 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
             return f.read(part_size)
 
     def file_hash_info(self, kvpid):
-        return FileHashInfo.from_bytes(self._get_file_hash_info(kvpid))
+        return FileInfo.from_bytes(self._get_file_hash_info(kvpid))
 
     def _get_file_hash_info(self, kvpid):
         with self.connection() as con:
@@ -563,6 +577,27 @@ class SharedFilesKVPTable(KVPTable, SQLite3Mixin):
         thread.start()
 
         return task
+
+    @property
+    def num_files(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT COUNT(1) FROM files')
+
+            return cur.fetchone()[0]
+
+    @property
+    def num_collections(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT COUNT(1) FROM collections')
+
+            return cur.fetchone()[0]
+
+    @property
+    def total_disk_size(self):
+        with self.connection() as con:
+            cur = con.execute('SELECT SUM(size) FROM files')
+
+            return cur.fetchone()[0]
 
 
 class SharedFilesRecord(KVPRecord):
@@ -732,21 +767,38 @@ class SharedFilesHashTask(Task):
         read.
     '''
 
-    def _walk_dir(self, path):
+    FILTERS = ('*.bytestag-incomplete',)
+
+    def _walk_dir(self, path, filters=None):
         '''Walk a directory in a sorted order and yield path, size and mtime'''
 
         # TODO: may run into recursion
         for dirpath, dirnames, filenames in os.walk(path, followlinks=True):
+            if filters:
+                matches = []
+
+                for pattern in filters:
+                    matches.extend(fnmatch.filter(dirnames, pattern))
+
+                accepted = set(dirnames)
+                accepted.difference_update(frozenset(matches))
+
+                dirnames[:] = list(accepted)
+
             dirnames.sort()
 
             for filename in sorted(filenames):
+                if any((fnmatch.fnmatch(
+                filename, filter_) for filter_ in filters)):
+                    continue
+
                 file_path = os.path.join(dirpath, filename)
                 size = os.path.getsize(file_path)
                 mtime = int(os.path.getmtime(file_path))
 
                 yield file_path, size, mtime
 
-    def run(self, table, part_size=2 ** 18):
+    def run(self, table, part_size=2 ** 18, filters=FILTERS):
         self._table = table
         self._part_size = part_size
 
@@ -754,7 +806,7 @@ class SharedFilesHashTask(Task):
             if not self.is_running:
                 return
 
-            self._hash_directory(directory)
+            self._hash_directory(directory, filters)
 
         if not table.shared_directories:
             _logger.info('No directories to hash')
@@ -763,10 +815,10 @@ class SharedFilesHashTask(Task):
 
         self._table.value_changed_observer(None)
 
-    def _hash_directory(self, directory):
+    def _hash_directory(self, directory, filters):
         _logger.info('Hashing directory %s', directory)
 
-        for file_path, size, mtime in self._walk_dir(directory):
+        for file_path, size, mtime in self._walk_dir(directory, filters):
             if not self.is_running:
                 return
 
@@ -815,7 +867,7 @@ class SharedFilesHashTask(Task):
                 hashes.append(part_hasher.digest())
 
         file_hash = whole_file_hasher.digest()
-        file_hash_info = FileHashInfo(file_hash, hashes)
+        file_hash_info = FileInfo(file_hash, hashes)
         index = hashlib.sha1(file_hash_info.to_bytes()).digest()
 
         with self._table.connection() as con:
@@ -839,6 +891,28 @@ class SharedFilesHashTask(Task):
                     '(?, ?, ?)', (hash_bytes, row_id, offset))
                 except sqlite3.IntegrityError:
                     _logger.exception('Possible duplicate')
+
+            collection_type = self._get_collection_type(path)
+
+            if collection_type:
+                con.execute('INSERT INTO collections '
+                    '(file_id, type) VALUES '
+                    '(?, ?)', (row_id, collection_type))
+
+    def _get_collection_type(self, path):
+        cookie_len = len(CollectionInfo.SIGNATURE)
+
+        with open(path, 'rb') as f:
+            data = f.read(cookie_len)
+
+            if CollectionInfo.is_valid_signature(data):
+                return CollectionInfoTypes.BYTESTAG
+
+            if path.endswith('.torrent'):
+                f.seek(0)
+
+                if BitTorrentInfoFile.is_valid_signature(f.read(1024)):
+                    return CollectionInfoTypes.BITTORRENT
 
     def _clean_database(self):
         _logger.info('Cleaning database')

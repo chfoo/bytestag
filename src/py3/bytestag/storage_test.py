@@ -136,7 +136,7 @@ class TestSharedFilesKVPTable(unittest.TestCase, TableMixin):
         data3 = os.urandom(4) + b'\x00' * 1000
 
         # XXX: Delay for integer filesystem timestamps
-        time.sleep(1)
+        time.sleep(1.5)
 
         os.remove(os.path.join(shared_dir.name, 'a.txt'))
 
@@ -162,3 +162,27 @@ class TestSharedFilesKVPTable(unittest.TestCase, TableMixin):
         self.assertNotIn(KVPID(KeyBytes(hash1), KeyBytes(hash1)), kvp_table)
         self.assertIn(KVPID(KeyBytes(hash2), KeyBytes(hash2)), kvp_table)
         self.assertIn(KVPID(KeyBytes(hash3), KeyBytes(hash3)), kvp_table)
+
+    def test_filters(self):
+        '''It should not include filtered files'''
+
+        shared_dir = tempfile.TemporaryDirectory()
+        temp_dir = tempfile.TemporaryDirectory()
+        path = os.path.join(temp_dir.name, 'test.db')
+        kvp_table = SharedFilesKVPTable(path)
+
+        kvp_table.shared_directories.append(shared_dir.name)
+
+        filenames = ['asdf.bytestag-incomplete']
+
+        for filename in filenames:
+            with open(os.path.join(shared_dir.name, filename), 'wb') as f:
+                f.write(filename.encode())
+
+        task = kvp_table.hash_directories()
+        task.result()
+
+        for filename in filenames:
+            hash_ = hashlib.sha1(filename.encode()).digest()
+            self.assertNotIn(KVPID(KeyBytes(hash_), KeyBytes(hash_)),
+                kvp_table)

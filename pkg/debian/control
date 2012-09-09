@@ -9,7 +9,7 @@ Homepage: https://launchpad.net/bytestag
 Package: bytestag
 Architecture: all
 Section: unknown/net
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag, python3-gi, python3-pkg-resources
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-bytestag, python3-pyside.qtgui, python3-pyside.qtuitools, python3-pkg-resources
 Description: Wide availability peer-to-peer file sharing program
  Bytestag is a peer-to-peer (P2P) file sharing system that uses a distributed
  hash table (DHT) to achieve wide availability of files. Unlike the BitTorrent
