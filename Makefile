@@ -1,4 +1,5 @@
 PREFIX ?= /usr/local
+PYTHON=python3
 
 build: build-doc build-py build-app build-daemon
 
@@ -26,13 +27,13 @@ clean-doc:
 	make -C doc/ clean
 
 build-py:
-	./setup.py build
+	$(PYTHON) ./setup.py build
 
 install-py: build-py
-	./setup.py install --prefix $(DESTDIR)/$(PREFIX)
+	$(PYTHON) ./setup.py install --prefix $(DESTDIR)/$(PREFIX)
 	
 clean-py:
-	./setup.py clean
+	$(PYTHON) ./setup.py clean
 	rm -rvf build/
 	rm -rvf dist/
 
