@@ -20,12 +20,9 @@ import warnings
 try:
     import miniupnpc
 except ImportError as e:
-    try:
-        import miniupnpc_bytestag as miniupnpc
-    except ImportError:
-        warnings.warn(e)
+    warnings.warn(e)
 
-        miniupnpc = None
+    miniupnpc = None
 
 
 __docformat__ = 'restructuredtext en'
