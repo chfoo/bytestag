@@ -1,0 +1,16 @@
+Index: miniupnpc-1.7.20120830/miniupnpcmodule.c
+===================================================================
+--- miniupnpc-1.7.20120830.orig/miniupnpcmodule.c	2012-09-14 22:26:57.137533872 -0400
++++ miniupnpc-1.7.20120830/miniupnpcmodule.c	2012-09-14 22:28:45.000000000 -0400
+@@ -256,9 +256,11 @@
+ 	}
+ 	else
+ 	{
++		/*
+ 		// TODO: RAISE an Exception. See upnpcommands.h for errors codes.
+ 		// upnperrors.c
+ 		//Py_RETURN_FALSE;
++		*/
+ 		/* TODO: have our own exception type ! */
+ 		PyErr_SetString(PyExc_Exception, strupnperror(r));
+ 		return NULL;

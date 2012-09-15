@@ -1,0 +1,86 @@
+Index: miniupnpc-1.7.20120830/Makefile
+===================================================================
+--- miniupnpc-1.7.20120830.orig/Makefile	2012-09-14 22:28:39.519038660 -0400
++++ miniupnpc-1.7.20120830/Makefile	2012-09-14 22:30:55.873044544 -0400
+@@ -116,13 +116,14 @@
+ 	installpythonmodule updateversion
+ #	validateminixml validateminiwget
+ 
+-all:	$(LIBRARY) $(EXECUTABLES)
++#all:	$(LIBRARY) $(EXECUTABLES)
++all: pythonmodule3
+ 
+ test:	check
+ 
+-check:	validateminixml validateminiwget
++#check:	validateminixml validateminiwget
+ 
+-everything:	all $(EXECUTABLES_ADDTESTS)
++#everything:	all $(EXECUTABLES_ADDTESTS)
+ 
+ pythonmodule:	$(LIBRARY) miniupnpcmodule.c setup.py
+ 	python setup.py build
+@@ -136,7 +137,7 @@
+ 	touch $@
+ 
+ installpythonmodule3:	pythonmodule3
+-	python3 setup.py install
++	python3 setup.py install --prefix $(DESTDIR)/$(INSTALLPREFIX)
+ 
+ validateminixml:	minixmlvalid
+ 	@echo "minixml validation test"
+@@ -156,32 +157,33 @@
+ 	#python setup.py clean
+ 	# clean jnaerator stuff
+ 	$(RM) _jnaerator.* java/miniupnpc_$(OS).jar
++	$(RM) *.o
+ 
+ updateversion:	miniupnpc.h
+ 	cp miniupnpc.h miniupnpc.h.bak
+ 	sed 's/\(.*MINIUPNPC_API_VERSION\s\+\)[0-9]\+/\1$(APIVERSION)/' < miniupnpc.h.bak > miniupnpc.h
+ 
+-install:	updateversion $(FILESTOINSTALL)
+-	$(INSTALL) -d $(INSTALLDIRINC)
+-	$(INSTALL) -m 644 $(HEADERS) $(INSTALLDIRINC)
+-	$(INSTALL) -d $(INSTALLDIRLIB)
+-	$(INSTALL) -m 644 $(LIBRARY) $(INSTALLDIRLIB)
+-ifneq ($(OS), AmigaOS)
+-	$(INSTALL) -m 644 $(SHAREDLIBRARY) $(INSTALLDIRLIB)/$(SONAME)
+-	ln -fs $(SONAME) $(INSTALLDIRLIB)/$(SHAREDLIBRARY)
+-endif
+-	$(INSTALL) -d $(INSTALLDIRBIN)
+-ifeq ($(OS), AmigaOS)
+-	$(INSTALL) -m 755 upnpc-static $(INSTALLDIRBIN)/upnpc
+-else
+-	$(INSTALL) -m 755 upnpc-shared $(INSTALLDIRBIN)/upnpc
+-endif
+-	$(INSTALL) -m 755 external-ip.sh $(INSTALLDIRBIN)/external-ip
+-ifneq ($(OS), AmigaOS)
+-	$(INSTALL) -d $(INSTALLDIRMAN)/man3
+-	$(INSTALL) man3/miniupnpc.3 $(INSTALLDIRMAN)/man3/miniupnpc.3
+-endif
+-
++#install:	updateversion $(FILESTOINSTALL)
++#	$(INSTALL) -d $(INSTALLDIRINC)
++#	$(INSTALL) -m 644 $(HEADERS) $(INSTALLDIRINC)
++#	$(INSTALL) -d $(INSTALLDIRLIB)
++#	$(INSTALL) -m 644 $(LIBRARY) $(INSTALLDIRLIB)
++#ifneq ($(OS), AmigaOS)
++#	$(INSTALL) -m 644 $(SHAREDLIBRARY) $(INSTALLDIRLIB)/$(SONAME)
++#	ln -fs $(SONAME) $(INSTALLDIRLIB)/$(SHAREDLIBRARY)
++#endif
++#	$(INSTALL) -d $(INSTALLDIRBIN)
++#ifeq ($(OS), AmigaOS)
++#	$(INSTALL) -m 755 upnpc-static $(INSTALLDIRBIN)/upnpc
++#else
++#	$(INSTALL) -m 755 upnpc-shared $(INSTALLDIRBIN)/upnpc
++#endif
++#	$(INSTALL) -m 755 external-ip.sh $(INSTALLDIRBIN)/external-ip
++#ifneq ($(OS), AmigaOS)
++#	$(INSTALL) -d $(INSTALLDIRMAN)/man3
++#	$(INSTALL) man3/miniupnpc.3 $(INSTALLDIRMAN)/man3/miniupnpc.3
++#endif
++install: installpythonmodule3
+ 
+ cleaninstall:
+ 	$(RM) -r $(INSTALLDIRINC)

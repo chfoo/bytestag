@@ -1,0 +1,14 @@
+Source: miniupnpc
+Priority: extra
+Maintainer: Christopher Foo <chris.foo@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), python3-dev
+Standards-Version: 3.9.2
+Section: net
+Homepage:http://miniupnp.free.fr/
+
+Package: python3-miniupnpc
+Section: python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: MiniUPnP client library
+ This package provides Python 3 bindings to libminiupnpc

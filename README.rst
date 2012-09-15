@@ -33,6 +33,7 @@ You will need:
 
 1. Python >=3.2
 2. Python module bitstring >=3.0
+3. Python module miniupnpc >= 1.7.20120830
 
 If you want the GUI you will need:
 
@@ -70,9 +71,11 @@ Dependencies
 3. cx_freeze (which, again, should match the Python version you
    installed.)
 4. If Windows, pywin32 extensions (matching Python version and 32/64 bit)
+5. The Python module miniupnpc >= 1.7.20120830.
 
-Build
------
+
+Build and Freeze
+----------------
 
 1. Run the command in project directory
    ``python setup_cx_freeze.py build``. If you are using Windows,
@@ -90,6 +93,22 @@ Read the cx_freeze documentation for details.
 If it crashes hard on Windows, install the Windows Debugger Tools (WinDbg) 
 to attach to the process and see which module failed to import. 
 It is usually a missing DLL.
+
+miniupnpc
++++++++++
+
+Miniupnpc can be obtained from `<http://miniupnp.free.fr/>`_. The build
+targets needed are ``init``, ``libminiupnpc.a``, ``pythonmodule3``, and
+``installpythonmodule3``.
+
+To build and install using Mingw32, use commands similar to::
+
+    mingw32-make -f Makefile.mingw -C init libminiupnpc.a pythonmodule
+    
+Fine-control over python install::
+
+    python.exe setupmingw32.py build --compiler mingw32
+    python.exe setupmingw32.py install --prefix PREFIX_HERE
 
 Contributing
 ============
