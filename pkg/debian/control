@@ -22,7 +22,7 @@ Description: Wide availability peer-to-peer file sharing program
 Package: python3-bytestag
 Architecture: all
 Section: unknown/python
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3 (>= 3.2)
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3 (>= 3.2), python3-miniupnpc
 Suggests: python3-bytestag-doc
 Description: Wide availability peer-to-peer file sharing
  Bytestag is a peer-to-peer (P2P) file sharing system that uses a distributed
